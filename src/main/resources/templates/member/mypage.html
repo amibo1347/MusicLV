@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('마이페이지', null)}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('')}"></header>
+
+<main class="page">
+    <div class="container">
+        <h1 class="page-title">마이페이지</h1>
+        <p class="page-desc" th:text="${member.name} + '님, 반갑습니다.'">회원님</p>
+
+        <div th:replace="~{fragments/layout :: flash}"></div>
+
+        <div class="form-card" style="margin-bottom:40px">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th style="width:140px">이메일</th>
+                    <td th:text="${member.email}">-</td>
+                </tr>
+                <tr>
+                    <th>이름</th>
+                    <td th:text="${member.name}">-</td>
+                </tr>
+                <tr>
+                    <th>연락처</th>
+                    <td th:text="${member.phone} ?: '미등록'">-</td>
+                </tr>
+                <tr>
+                    <th>주소</th>
+                    <td th:text="${member.address} ?: '미등록'">-</td>
+                </tr>
+                <tr>
+                    <th>회원등급</th>
+                    <td th:text="${member.role.label}">-</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section-head">
+            <h2 class="page-title" style="font-size:1.4rem">최근 주문</h2>
+            <a th:href="@{/orders}" class="btn btn-outline btn-sm">전체 주문 내역</a>
+        </div>
+
+        <div class="table-wrap" th:if="${!orders.isEmpty()}">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>주문번호</th>
+                    <th>주문일</th>
+                    <th>상품</th>
+                    <th class="num">결제금액</th>
+                    <th class="center">상태</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${orders}">
+                    <td><a th:href="@{/orders/{id}(id=${order.id})}" th:text="'#' + ${order.id}">#1</a></td>
+                    <td th:text="${#temporals.format(order.orderedAt, 'yyyy-MM-dd')}">-</td>
+                    <td th:text="${order.summaryName}">-</td>
+                    <td class="num" th:text="${#numbers.formatInteger(order.totalAmount, 3, 'COMMA')} + '원'">0원</td>
+                    <td class="center">
+                        <span class="status" th:classappend="'status-' + ${order.status}"
+                              th:text="${order.status.label}">-</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="empty" th:if="${orders.isEmpty()}">
+            <p class="empty-title">아직 주문 내역이 없습니다.</p>
+            <a th:href="@{/products}" class="btn btn-primary">상품 보러 가기</a>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+</body>
+
+</html>

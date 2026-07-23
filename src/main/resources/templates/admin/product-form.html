@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('상품 등록', 'shop')}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('admin')}"></header>
+
+<main class="page">
+    <div class="container" style="max-width:760px">
+
+        <h1 class="page-title" th:text="${productForm.id == null} ? '상품 등록' : '상품 수정'">상품 등록</h1>
+        <p class="page-desc">진열할 악기 정보를 입력해주세요.</p>
+
+        <div th:replace="~{fragments/layout :: flash}"></div>
+
+        <div class="form-card">
+            <form th:object="${productForm}" method="post" enctype="multipart/form-data"
+                  th:action="${productForm.id == null}
+                             ? @{/admin/products}
+                             : @{/admin/products/{id}(id=${productForm.id})}">
+
+                <!-- 검증 실패로 폼이 다시 그려질 때 수정 대상 id 를 잃지 않도록 -->
+                <input type="hidden" th:field="*{id}">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="name">상품명</label>
+                        <input type="text" id="name" class="form-control" th:field="*{name}">
+                        <span class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="brand">브랜드</label>
+                        <input type="text" id="brand" class="form-control" th:field="*{brand}">
+                        <span class="field-error" th:if="${#fields.hasErrors('brand')}" th:errors="*{brand}"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="category">카테고리</label>
+                        <select id="category" class="form-control" th:field="*{category}">
+                            <option value="">선택하세요</option>
+                            <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat.label}">-</option>
+                        </select>
+                        <span class="field-error" th:if="${#fields.hasErrors('category')}"
+                              th:errors="*{category}"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="price">가격 (원)</label>
+                        <input type="number" id="price" class="form-control" th:field="*{price}" min="0">
+                        <span class="field-error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="stock">재고 (개)</label>
+                        <input type="number" id="stock" class="form-control" th:field="*{stock}" min="0">
+                        <span class="field-error" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="description">상품 설명</label>
+                    <textarea id="description" class="form-control" th:field="*{description}"
+                              placeholder="악기의 특징, 스펙, 구성품 등을 적어주세요."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="imageFile">상품 이미지</label>
+
+                    <div th:if="*{imageUrl}" style="margin-bottom:12px">
+                        <img th:src="*{imageUrl}" alt="현재 이미지"
+                             style="max-width:240px; border-radius:8px; border:1px solid var(--border)">
+                        <p class="form-label" style="margin-top:6px">
+                            새 파일을 선택하지 않으면 현재 이미지가 유지됩니다.
+                        </p>
+                    </div>
+
+                    <input type="file" id="imageFile" class="form-control" th:field="*{imageFile}"
+                           accept="image/png, image/jpeg, image/gif, image/webp">
+                    <span class="field-error" th:if="${#fields.hasErrors('imageFile')}"
+                          th:errors="*{imageFile}"></span>
+                </div>
+
+                <div class="form-footer">
+                    <a th:href="@{/admin/products}" class="btn btn-outline">취소</a>
+                    <button type="submit" class="btn btn-primary" style="flex:1"
+                            th:text="${productForm.id == null} ? '등록하기' : '수정하기'">등록하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+</body>
+
+</html>

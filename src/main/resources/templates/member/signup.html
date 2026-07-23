@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('회원가입', null)}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('')}"></header>
+
+<main class="page">
+    <div class="container-narrow">
+        <h1 class="page-title">회원가입</h1>
+        <p class="page-desc">MusicLV 회원이 되면 장바구니와 주문 내역을 이용할 수 있습니다.</p>
+
+        <div th:replace="~{fragments/layout :: flash}"></div>
+
+        <div class="form-card">
+            <form th:action="@{/members/signup}" th:object="${signupForm}" method="post">
+
+                <div class="form-group">
+                    <label class="form-label" for="email">이메일</label>
+                    <input type="email" id="email" class="form-control" th:field="*{email}"
+                           placeholder="musiclv@example.com" autocomplete="username">
+                    <span class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">비밀번호</label>
+                    <input type="password" id="password" class="form-control" th:field="*{password}"
+                           placeholder="8자 이상" autocomplete="new-password">
+                    <span class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="passwordConfirm">비밀번호 확인</label>
+                    <input type="password" id="passwordConfirm" class="form-control" th:field="*{passwordConfirm}"
+                           autocomplete="new-password">
+                    <span class="field-error" th:if="${#fields.hasErrors('passwordConfirm')}"
+                          th:errors="*{passwordConfirm}"></span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="name">이름</label>
+                        <input type="text" id="name" class="form-control" th:field="*{name}">
+                        <span class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="phone">연락처</label>
+                        <input type="text" id="phone" class="form-control" th:field="*{phone}"
+                               placeholder="010-0000-0000">
+                        <span class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="address">주소</label>
+                    <input type="text" id="address" class="form-control" th:field="*{address}"
+                           placeholder="배송받을 주소">
+                    <span class="field-error" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></span>
+                </div>
+
+                <div class="form-footer">
+                    <button type="submit" class="btn btn-primary btn-block">가입하기</button>
+                </div>
+            </form>
+
+            <p class="form-hint">
+                이미 계정이 있으신가요? <a th:href="@{/members/login}">로그인</a>
+            </p>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+</body>
+
+</html>

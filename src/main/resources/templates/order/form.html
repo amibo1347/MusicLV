@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('주문서 작성', 'shop')}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('store')}"></header>
+
+<main class="page">
+    <div class="container">
+        <h1 class="page-title">주문서 작성</h1>
+        <p class="page-desc">배송 정보를 확인하고 주문을 완료해주세요.</p>
+
+        <div th:replace="~{fragments/layout :: flash}"></div>
+
+        <form th:action="@{/orders}" th:object="${orderForm}" method="post">
+            <div class="order-layout">
+
+                <div class="form-card">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="receiverName">받는 분</label>
+                            <input type="text" id="receiverName" class="form-control" th:field="*{receiverName}">
+                            <span class="field-error" th:if="${#fields.hasErrors('receiverName')}"
+                                  th:errors="*{receiverName}"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="receiverPhone">연락처</label>
+                            <input type="text" id="receiverPhone" class="form-control" th:field="*{receiverPhone}"
+                                   placeholder="010-0000-0000">
+                            <span class="field-error" th:if="${#fields.hasErrors('receiverPhone')}"
+                                  th:errors="*{receiverPhone}"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="address">배송 주소</label>
+                        <input type="text" id="address" class="form-control" th:field="*{address}">
+                        <span class="field-error" th:if="${#fields.hasErrors('address')}"
+                              th:errors="*{address}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="memo">배송 요청사항</label>
+                        <input type="text" id="memo" class="form-control" th:field="*{memo}"
+                               placeholder="예) 부재 시 경비실에 맡겨주세요">
+                        <span class="field-error" th:if="${#fields.hasErrors('memo')}" th:errors="*{memo}"></span>
+                    </div>
+                </div>
+
+                <aside class="order-summary-card">
+                    <h2>주문 상품</h2>
+
+                    <div class="order-summary-item" th:each="item : ${items}">
+                        <span th:text="${item.product.name} + ' × ' + ${item.quantity}">상품</span>
+                        <span th:text="${#numbers.formatInteger(item.subtotal, 3, 'COMMA')} + '원'">0원</span>
+                    </div>
+
+                    <div class="order-summary-total">
+                        <span class="summary-label">총 결제금액</span>
+                        <strong th:text="${#numbers.formatInteger(totalAmount, 3, 'COMMA')} + '원'">0원</strong>
+                    </div>
+
+                    <div class="form-footer">
+                        <button type="submit" class="btn btn-primary btn-block">주문 완료하기</button>
+                    </div>
+                    <p class="form-hint">
+                        <a th:href="@{/cart}">장바구니로 돌아가기</a>
+                    </p>
+                </aside>
+
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+</body>
+
+</html>

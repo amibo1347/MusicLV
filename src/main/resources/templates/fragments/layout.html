@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>레이아웃 조각</title>
+</head>
+<body>
+
+<!--
+    프래그먼트 이름에 head / header / footer 를 쓰면 Thymeleaf 가 같은 이름의 HTML 태그를
+    먼저 선택해버리므로, 태그명과 겹치지 않는 이름을 쓴다.
+-->
+
+<!-- ===================== 공통 head ===================== -->
+<!-- extraCss: 페이지 전용 스타일시트 이름. 없으면 null 을 넘긴다. -->
+<th:block th:fragment="commonHead(title, extraCss)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} + ' | MusicLV'">MusicLV</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link th:if="${extraCss != null}" rel="stylesheet" th:href="@{'/css/' + ${extraCss} + '.css'}">
+</th:block>
+
+<!-- ===================== 헤더 ===================== -->
+<header class="site-header" th:fragment="siteHeader(menu)">
+    <div class="header-top">
+        <a th:href="@{/}" class="brand">
+            <img th:src="@{/img/logo.png}" alt="MusicLV 로고" class="brand-logo">
+            <span class="brand-text">
+                <strong class="brand-name">MusicLV</strong>
+                <span class="brand-sub">Band-Lover</span>
+            </span>
+        </a>
+
+        <form class="search-container" role="search" th:action="@{/products}" method="get">
+            <input type="search" name="keyword" class="search-input"
+                   placeholder="악기를 검색해보세요" th:value="${keyword}">
+            <button type="submit" class="search-btn" aria-label="검색">
+                <img th:src="@{/img/search.png}" alt="">
+            </button>
+        </form>
+
+        <nav class="user-nav">
+            <!-- 비로그인 -->
+            <th:block sec:authorize="!isAuthenticated()">
+                <a th:href="@{/members/login}" class="user-nav-item">Login</a>
+                <a th:href="@{/members/signup}" class="user-nav-item">Register</a>
+            </th:block>
+
+            <!-- 로그인 -->
+            <th:block sec:authorize="isAuthenticated()">
+                <span class="user-nav-name" sec:authentication="principal.name">회원</span>
+                <a th:href="@{/cart}" class="user-nav-item">
+                    Cart<span class="cart-badge" th:if="${cartCount > 0}" th:text="${cartCount}">0</span>
+                </a>
+                <a th:href="@{/members/mypage}" class="user-nav-item">My-page</a>
+                <form th:action="@{/members/logout}" method="post" style="display:inline">
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            </th:block>
+        </nav>
+    </div>
+
+    <nav class="global-nav">
+        <ul class="global-nav-links">
+            <li><a th:href="@{/products}" class="global-nav-item"
+                   th:classappend="${menu == 'store'} ? ' active'">MusicStore</a></li>
+            <li><a th:href="@{/}" class="global-nav-item"
+                   th:classappend="${menu == 'ticket'} ? ' active'">Ticket</a></li>
+            <li><a th:href="@{/}" class="global-nav-item"
+                   th:classappend="${menu == 'about'} ? ' active'">About</a></li>
+            <li><a th:href="@{/}" class="global-nav-item"
+                   th:classappend="${menu == 'contents'} ? ' active'">Contents</a></li>
+            <li sec:authorize="hasRole('ADMIN')" style="margin-left:auto">
+                <a th:href="@{/admin/products}" class="global-nav-item admin"
+                   th:classappend="${menu == 'admin'} ? ' active'">관리자</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+
+<!-- ===================== 플래시 메시지 ===================== -->
+<th:block th:fragment="flash">
+    <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+    <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+</th:block>
+
+<!-- ===================== 푸터 ===================== -->
+<footer th:fragment="siteFooter">
+    <div class="site-footer">
+        <div class="footer-textbox">
+            <dl class="dl-1">
+                <dt>상호 :</dt>
+                <dd>(주)풀스택 부트캠프</dd>
+                <dt>대표 :</dt>
+                <dd>강태호</dd>
+                <dt>메일 :</dt>
+                <dd>master@fullstack.co.kr</dd>
+                <dt>사업자등록번호 :</dt>
+                <dd>123-45-678</dd>
+                <dt>통신판매업신고번호 :</dt>
+                <dd>1234-하남미사-5678</dd>
+            </dl>
+            <dl class="dl-2">
+                <dt>대표번호 :</dt>
+                <dd>2026-9999</dd>
+                <dt>팩스번호 :</dt>
+                <dd>26-01-22</dd>
+                <dt>주소 :</dt>
+                <dd>경기도 하남 미사동 풀스택 캠프 3층</dd>
+            </dl>
+            <dl class="dl-3">
+                <dt>개인정보관리자 :</dt>
+                <dd>이재용</dd>
+                <dt>호스팅제공 :</dt>
+                <dd>KD아카데미(주)</dd>
+            </dl>
+            <p>copyright © Kang Taeho all rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- ===================== 상품 카드 ===================== -->
+<a th:fragment="productCard(product)" class="product-card" th:href="@{/products/{id}(id=${product.id})}">
+    <div class="product-thumb">
+        <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" th:alt="${product.name}">
+        <span th:unless="${product.imageUrl}" class="thumb-placeholder"
+              th:text="${product.category.label}">카테고리</span>
+        <span th:if="${product.soldOut}" class="sold-out-badge">SOLD OUT</span>
+    </div>
+    <div class="product-body">
+        <span class="product-brand" th:text="${product.brand}">브랜드</span>
+        <span class="product-name" th:text="${product.name}">상품명</span>
+        <span class="product-price" th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')} + '원'">0원</span>
+    </div>
+</a>
+
+</body>
+</html>

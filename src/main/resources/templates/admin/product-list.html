@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('상품 관리', 'shop')}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('admin')}"></header>
+
+<main class="page">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <h1 class="page-title">상품 관리</h1>
+                <p class="page-desc" style="margin:0"
+                   th:text="'전체 ' + ${products.totalElements} + '개의 상품'">0개</p>
+            </div>
+            <div style="display:flex; gap:10px">
+                <a th:href="@{/admin/orders}" class="btn btn-outline">주문 관리</a>
+                <a th:href="@{/admin/products/new}" class="btn btn-primary">+ 상품 등록</a>
+            </div>
+        </div>
+
+        <div th:replace="~{fragments/layout :: flash}"></div>
+
+        <div class="filter-bar">
+            <a class="chip" th:classappend="${selectedCategory == null} ? ' active'"
+               th:href="@{/admin/products(keyword=${keyword})}">전체</a>
+            <a th:each="cat : ${categories}" class="chip"
+               th:classappend="${selectedCategory != null and selectedCategory.name == cat.name} ? ' active'"
+               th:href="@{/admin/products(keyword=${keyword}, category=${cat})}"
+               th:text="${cat.label}">카테고리</a>
+
+            <form class="filter-spacer" th:action="@{/admin/products}" method="get"
+                  style="display:flex; gap:8px">
+                <input type="hidden" name="category" th:value="${selectedCategory}">
+                <input type="search" name="keyword" class="select" th:value="${keyword}"
+                       placeholder="상품명 / 브랜드 검색">
+                <button type="submit" class="btn btn-outline btn-sm">검색</button>
+            </form>
+        </div>
+
+        <div class="table-wrap" th:if="${products.hasContent()}">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>상품</th>
+                    <th>카테고리</th>
+                    <th class="num">가격</th>
+                    <th class="num">재고</th>
+                    <th>등록일</th>
+                    <th class="center">관리</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="product : ${products.content}">
+                    <td th:text="${product.id}">1</td>
+                    <td>
+                        <a class="cart-product" th:href="@{/products/{id}(id=${product.id})}">
+                            <span class="cart-thumb">
+                                <img th:if="${product.imageUrl}" th:src="${product.imageUrl}"
+                                     th:alt="${product.name}">
+                                <span th:unless="${product.imageUrl}" class="thumb-placeholder"
+                                      th:text="${product.category.label}">-</span>
+                            </span>
+                            <span>
+                                <span class="cart-product-brand" th:text="${product.brand}">브랜드</span><br>
+                                <span class="cart-product-name" th:text="${product.name}">상품명</span>
+                            </span>
+                        </a>
+                    </td>
+                    <td th:text="${product.category.label}">-</td>
+                    <td class="num" th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')} + '원'">0원</td>
+                    <td class="num">
+                        <span th:if="${!product.soldOut}" th:text="${product.stock}">0</span>
+                        <span th:if="${product.soldOut}" style="color:var(--danger)">품절</span>
+                    </td>
+                    <td th:text="${#temporals.format(product.createdAt, 'yyyy-MM-dd')}">-</td>
+                    <td class="center">
+                        <div style="display:flex; gap:6px; justify-content:center">
+                            <a th:href="@{/admin/products/{id}/edit(id=${product.id})}"
+                               class="btn btn-outline btn-sm">수정</a>
+                            <form th:action="@{/admin/products/{id}/delete(id=${product.id})}" method="post"
+                                  onsubmit="return confirm('이 상품을 삭제하시겠습니까?');">
+                                <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="empty" th:unless="${products.hasContent()}">
+            <p class="empty-title">등록된 상품이 없습니다.</p>
+            <a th:href="@{/admin/products/new}" class="btn btn-primary">상품 등록하기</a>
+        </div>
+
+        <nav class="pagination" th:if="${products.totalPages > 1}">
+            <a th:if="${!products.first}"
+               th:href="@{/admin/products(keyword=${keyword}, category=${selectedCategory}, page=${products.number - 1})}">이전</a>
+            <span th:unless="${!products.first}" class="disabled">이전</span>
+
+            <th:block th:each="i : ${#numbers.sequence(0, products.totalPages - 1)}">
+                <span th:if="${i == products.number}" class="current" th:text="${i + 1}">1</span>
+                <a th:unless="${i == products.number}"
+                   th:href="@{/admin/products(keyword=${keyword}, category=${selectedCategory}, page=${i})}"
+                   th:text="${i + 1}">1</a>
+            </th:block>
+
+            <a th:if="${!products.last}"
+               th:href="@{/admin/products(keyword=${keyword}, category=${selectedCategory}, page=${products.number + 1})}">다음</a>
+            <span th:unless="${!products.last}" class="disabled">다음</span>
+        </nav>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+</body>
+
+</html>

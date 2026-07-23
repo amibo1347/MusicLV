@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('주문 상세', 'shop')}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('')}"></header>
+
+<main class="page">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <h1 class="page-title" th:text="'주문 #' + ${order.id}">주문</h1>
+                <p class="page-desc" style="margin:0"
+                   th:text="${#temporals.format(order.orderedAt, 'yyyy년 M월 d일 HH:mm')} + ' 주문'">-</p>
+            </div>
+            <span class="status" th:classappend="'status-' + ${order.status}"
+                  th:text="${order.status.label}">상태</span>
+        </div>
+
+        <div th:replace="~{fragments/layout :: flash}"></div>
+
+        <div class="order-info-card">
+            <dl>
+                <div class="order-info-row">
+                    <dt>받는 분</dt>
+                    <dd th:text="${order.receiverName}">-</dd>
+                </div>
+                <div class="order-info-row">
+                    <dt>연락처</dt>
+                    <dd th:text="${order.receiverPhone}">-</dd>
+                </div>
+                <div class="order-info-row">
+                    <dt>배송 주소</dt>
+                    <dd th:text="${order.address}">-</dd>
+                </div>
+                <div class="order-info-row" th:if="${order.memo}">
+                    <dt>요청사항</dt>
+                    <dd th:text="${order.memo}">-</dd>
+                </div>
+            </dl>
+        </div>
+
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>상품</th>
+                    <th class="num">주문 당시 가격</th>
+                    <th class="num">수량</th>
+                    <th class="num">합계</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${order.orderItems}">
+                    <td>
+                        <a class="cart-product" th:href="@{/products/{id}(id=${item.product.id})}">
+                            <span class="cart-thumb">
+                                <img th:if="${item.product.imageUrl}" th:src="${item.product.imageUrl}"
+                                     th:alt="${item.product.name}">
+                                <span th:unless="${item.product.imageUrl}" class="thumb-placeholder"
+                                      th:text="${item.product.category.label}">-</span>
+                            </span>
+                            <span>
+                                <span class="cart-product-brand" th:text="${item.product.brand}">브랜드</span><br>
+                                <span class="cart-product-name" th:text="${item.product.name}">상품명</span>
+                            </span>
+                        </a>
+                    </td>
+                    <td class="num" th:text="${#numbers.formatInteger(item.orderPrice, 3, 'COMMA')} + '원'">0원</td>
+                    <td class="num" th:text="${item.quantity} + '개'">0개</td>
+                    <td class="num" th:text="${#numbers.formatInteger(item.subtotal, 3, 'COMMA')} + '원'">0원</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="summary-bar">
+            <span class="summary-label">총 결제금액</span>
+            <span class="summary-total"
+                  th:text="${#numbers.formatInteger(order.totalAmount, 3, 'COMMA')} + '원'">0원</span>
+        </div>
+
+        <div class="cart-actions">
+            <a th:href="@{/orders}" class="btn btn-outline">주문 내역으로</a>
+            <form th:action="@{/orders/{id}/cancel(id=${order.id})}" method="post"
+                  th:if="${order.status.cancellable}"
+                  onsubmit="return confirm('주문을 취소하시겠습니까? 재고가 복구됩니다.');">
+                <button type="submit" class="btn btn-danger">주문 취소</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+</body>
+
+</html>

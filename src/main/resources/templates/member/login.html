@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('로그인', null)}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('')}"></header>
+
+<main class="page">
+    <div class="container-narrow">
+        <h1 class="page-title">로그인</h1>
+        <p class="page-desc">가입하신 이메일로 로그인해주세요.</p>
+
+        <div th:replace="~{fragments/layout :: flash}"></div>
+        <div class="alert alert-error" th:if="${param.error}">
+            이메일 또는 비밀번호가 올바르지 않습니다.
+        </div>
+        <div class="alert alert-success" th:if="${param.logout}">
+            로그아웃되었습니다.
+        </div>
+
+        <div class="form-card">
+            <form th:action="@{/members/login}" method="post">
+                <div class="form-group">
+                    <label class="form-label" for="email">이메일</label>
+                    <input type="email" id="email" name="email" class="form-control"
+                           placeholder="musiclv@example.com" autocomplete="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">비밀번호</label>
+                    <input type="password" id="password" name="password" class="form-control"
+                           autocomplete="current-password" required>
+                </div>
+
+                <div class="form-footer">
+                    <button type="submit" class="btn btn-primary btn-block">로그인</button>
+                </div>
+            </form>
+
+            <p class="form-hint">
+                아직 회원이 아니신가요? <a th:href="@{/members/signup}">회원가입</a>
+            </p>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+</body>
+
+</html>

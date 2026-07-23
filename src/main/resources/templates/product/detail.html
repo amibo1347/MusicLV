@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead(${product.name}, 'shop')}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('store')}"></header>
+
+<main class="page">
+    <div class="container">
+
+        <div th:replace="~{fragments/layout :: flash}"></div>
+
+        <div class="detail-grid">
+            <div class="detail-image">
+                <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" th:alt="${product.name}">
+                <span th:unless="${product.imageUrl}" class="thumb-placeholder"
+                      th:text="${product.category.label}">카테고리</span>
+            </div>
+
+            <div>
+                <p class="detail-brand" th:text="${product.brand}">브랜드</p>
+                <h1 class="detail-name" th:text="${product.name}">상품명</h1>
+                <p class="detail-price"
+                   th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')} + '원'">0원</p>
+
+                <dl class="detail-meta">
+                    <div class="detail-meta-row">
+                        <dt>카테고리</dt>
+                        <dd th:text="${product.category.label}">-</dd>
+                    </div>
+                    <div class="detail-meta-row">
+                        <dt>재고</dt>
+                        <dd th:if="${!product.soldOut}" th:text="${product.stock} + '개 남음'">0개</dd>
+                        <dd th:if="${product.soldOut}" style="color:var(--danger)">품절</dd>
+                    </div>
+                    <div class="detail-meta-row">
+                        <dt>배송</dt>
+                        <dd>주문 후 2~3일 내 출고</dd>
+                    </div>
+                </dl>
+
+                <form th:action="@{/cart/add}" method="post">
+                    <input type="hidden" name="productId" th:value="${product.id}">
+
+                    <div class="qty-row">
+                        <label class="form-label" for="quantity" style="margin:0">수량</label>
+                        <input type="number" id="quantity" name="quantity" class="qty-input"
+                               value="1" min="1" th:max="${product.stock}"
+                               th:disabled="${product.soldOut}">
+                    </div>
+
+                    <div class="detail-actions">
+                        <button type="submit" class="btn btn-outline" th:disabled="${product.soldOut}">
+                            장바구니 담기
+                        </button>
+                        <!-- 장바구니에 담은 뒤 곧바로 주문서로 넘어간다 -->
+                        <button type="submit" name="buyNow" value="true" class="btn btn-primary"
+                                th:disabled="${product.soldOut}">
+                            바로 구매하기
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <section class="detail-description" th:if="${product.description}">
+            <h2>상품 설명</h2>
+            <p th:text="${product.description}">설명</p>
+        </section>
+
+        <div style="margin-top:50px">
+            <a th:href="@{/products}" class="btn btn-outline">목록으로</a>
+        </div>
+
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+</body>
+
+</html>

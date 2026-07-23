@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('Band-Lover', 'landing')}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('home')}"></header>
+
+<section id="scroll-section-0" class="scroll-section">
+    <div class="sticky-element">
+        <video width="1920" height="1080" th:src="@{/media/video/hanlolo.mp4}" id="section0-video"
+               autoplay loop muted playsinline></video>
+    </div>
+    <div class="sticky-element section0-message">
+        <h1>Real Sound</h1>
+    </div>
+</section>
+
+<section id="scroll-section-1" class="scroll-section">
+    <div class="sticky-element section1-canvas">
+        <!-- 드럼 시퀀스 프레임과 같은 1280x720(16:9). 확대나 찌그러짐 없이 그려진다. -->
+        <canvas id="section1-canvas" width="1280" height="720"></canvas>
+    </div>
+    <div class="sticky-element section1-message a">
+        <p>한 시대를 풍미하고 여운을 남긴</p>
+    </div>
+    <div class="sticky-element section1-message b">
+        <p>우리의 눈과 귀 모두 즐거운 시간</p>
+    </div>
+    <div class="sticky-element section1-message c">
+        <p>아무도 예상치 못한 순간에 찾아온 설렘</p>
+    </div>
+</section>
+
+<section id="scroll-section-2" class="scroll-section">
+    <div class="section2-message">
+        <p>
+            싱어송라이터 한로로는 2022년 3월 14일에 데뷔했다
+            예명 '한로로'는 본명이 '지수'여서 고등학교 때
+            수학 과목의 '지수와 로그'로 인해 '한로그'라는
+            별명으로 불린 데서 유래했다고 한다
+            '한로그'가 너무 수학적인 느낌일 것 같아
+            동글동글한 느낌을 주기 위해 '한로로'로 지었다고한다
+        </p>
+    </div>
+    <div class="change_textlist">
+        <h1 class="change_text">기타는 말보다 솔직하다</h1>
+        <h1 class="change_text">드럼은 심장보다 먼저 뛴다</h1>
+        <h1 class="change_text">우리는 장르를 묻지 않는다</h1>
+        <h1 class="change_text">감정이 먼저 폭발한다</h1>
+        <h1 class="change_text">이건 노래가 아니라 선언이다</h1>
+        <h1 class="change_text">조용한 밤은 오늘로 끝이다</h1>
+        <h1 class="change_text">리듬은 타협하지 않는다</h1>
+        <h1 class="change_text">무대 위에서 우리는 진짜가 된다</h1>
+        <h1 class="change_text">관객은 필요 없다, 공명만 있으면 된다</h1>
+        <h1 class="change_text">공연은 이미 시작되었다</h1>
+    </div>
+</section>
+
+<!-- 스크롤 연출이 끝나면 바로 상품으로 이어진다 -->
+<section class="landing-products">
+    <div class="container">
+        <h2 class="section-title">새로 들어온 악기</h2>
+        <p class="section-sub">무대에 올릴 다음 한 대를 골라보세요.</p>
+
+        <div class="product-grid" th:if="${!latestProducts.isEmpty()}">
+            <th:block th:each="product : ${latestProducts}">
+                <div th:replace="~{fragments/layout :: productCard(${product})}"></div>
+            </th:block>
+        </div>
+
+        <div class="empty" th:if="${latestProducts.isEmpty()}">
+            <p class="empty-title">아직 등록된 상품이 없습니다.</p>
+        </div>
+
+        <div class="landing-more">
+            <a th:href="@{/products}" class="btn btn-outline">전체 상품 보기</a>
+        </div>
+    </div>
+</section>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+
+</html>

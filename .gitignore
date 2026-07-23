@@ -1,0 +1,33 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# VS Code Java 확장이 만드는 컴파일 출력
+bin/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS
+Thumbs.db
+.DS_Store
+
+# 로컬 전용 설정 (DB 비밀번호 등)
+src/main/resources/application-local.yml
+
+# 배포 서버(/opt/musiclv)에만 존재하는 것들.
+# 이 디렉터리가 곧 git 작업 트리라서 여기서 제외해야 배포가 깨끗하다.
+musiclv.env
+musiclv.jar
+musiclv.jar.prev
+deploy.log
+
+# 대용량 미디어 — 저장소에 올리지 않고 배포 서버로 직접 전송한다.
+# (드럼 스크롤 시퀀스 451장 + 배경 영상)
+assets/

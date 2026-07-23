@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('주문 내역', null)}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('')}"></header>
+
+<main class="page">
+    <div class="container">
+        <h1 class="page-title">주문 내역</h1>
+        <p class="page-desc" th:text="'전체 ' + ${orders.size()} + '건'">0건</p>
+
+        <div th:replace="~{fragments/layout :: flash}"></div>
+
+        <div class="table-wrap" th:if="${!orders.isEmpty()}">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>주문번호</th>
+                    <th>주문일시</th>
+                    <th>상품</th>
+                    <th class="num">수량</th>
+                    <th class="num">결제금액</th>
+                    <th class="center">상태</th>
+                    <th class="center"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${orders}">
+                    <td th:text="'#' + ${order.id}">#1</td>
+                    <td th:text="${#temporals.format(order.orderedAt, 'yyyy-MM-dd HH:mm')}">-</td>
+                    <td th:text="${order.summaryName}">-</td>
+                    <td class="num" th:text="${order.totalQuantity} + '개'">0개</td>
+                    <td class="num" th:text="${#numbers.formatInteger(order.totalAmount, 3, 'COMMA')} + '원'">0원</td>
+                    <td class="center">
+                        <span class="status" th:classappend="'status-' + ${order.status}"
+                              th:text="${order.status.label}">-</span>
+                    </td>
+                    <td class="center">
+                        <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-outline btn-sm">상세</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="empty" th:if="${orders.isEmpty()}">
+            <p class="empty-title">아직 주문 내역이 없습니다.</p>
+            <a th:href="@{/products}" class="btn btn-primary">상품 보러 가기</a>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+</body>
+
+</html>

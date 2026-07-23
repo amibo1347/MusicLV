@@ -67,6 +67,9 @@
                     <button type="submit" class="logout-btn">Logout</button>
                 </form>
             </th:block>
+
+            <!-- 비회원도 주문번호로 배송 상태를 확인할 수 있다 -->
+            <a sec:authorize="!isAuthenticated()" th:href="@{/orders/guest}" class="user-nav-item">주문조회</a>
         </nav>
     </div>
 
@@ -74,12 +77,12 @@
         <ul class="global-nav-links">
             <li><a th:href="@{/products}" class="global-nav-item"
                    th:classappend="${menu == 'store'} ? ' active'">MusicStore</a></li>
-            <li><a th:href="@{/}" class="global-nav-item"
+            <li><a th:href="@{/tickets}" class="global-nav-item"
                    th:classappend="${menu == 'ticket'} ? ' active'">Ticket</a></li>
-            <li><a th:href="@{/}" class="global-nav-item"
+            <li><a th:href="@{/guide}" class="global-nav-item"
+                   th:classappend="${menu == 'guide'} ? ' active'">Guide</a></li>
+            <li><a th:href="@{/about}" class="global-nav-item"
                    th:classappend="${menu == 'about'} ? ' active'">About</a></li>
-            <li><a th:href="@{/}" class="global-nav-item"
-                   th:classappend="${menu == 'contents'} ? ' active'">Contents</a></li>
             <li sec:authorize="hasRole('ADMIN')" style="margin-left:auto">
                 <a th:href="@{/admin/products}" class="global-nav-item admin"
                    th:classappend="${menu == 'admin'} ? ' active'">관리자</a>

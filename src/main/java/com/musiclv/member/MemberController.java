@@ -1,5 +1,6 @@
 package com.musiclv.member;
 
+import com.musiclv.booking.BookingService;
 import com.musiclv.order.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final OrderService orderService;
+    private final BookingService bookingService;
 
     @GetMapping("/signup")
     public String signupForm(Model model) {
@@ -56,6 +58,7 @@ public class MemberController {
     public String mypage(@AuthenticationPrincipal MemberPrincipal principal, Model model) {
         model.addAttribute("member", memberService.getById(principal.getId()));
         model.addAttribute("orders", orderService.getMyOrders(principal.getId()));
+        model.addAttribute("bookings", bookingService.getMyBookings(principal.getId()));
         return "member/mypage";
     }
 }

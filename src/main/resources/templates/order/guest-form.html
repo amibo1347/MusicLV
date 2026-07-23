@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('비회원 주문', 'auth')}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('store')}"></header>
+
+<main class="page">
+    <div class="auth-wrap">
+        <div class="auth-head">
+            <h1 class="page-title">비회원 주문</h1>
+            <p class="page-desc">회원가입 없이 주문하고, 발급된 주문번호로 배송 상태를 확인할 수 있습니다.</p>
+        </div>
+
+        <div th:replace="~{fragments/layout :: flash}"></div>
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+
+        <!-- 주문 상품 -->
+        <div class="form-card" style="margin-bottom:20px">
+            <p class="form-section-title">주문 상품</p>
+            <div class="cart-product">
+                <span class="cart-thumb">
+                    <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" th:alt="${product.name}">
+                    <span th:unless="${product.imageUrl}" class="thumb-placeholder"
+                          th:text="${product.category.label}">-</span>
+                </span>
+                <span>
+                    <span class="cart-product-brand" th:text="${product.brand}">브랜드</span><br>
+                    <span class="cart-product-name" th:text="${product.name}">상품명</span><br>
+                    <span class="cart-product-brand"
+                          th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')} + '원'">0원</span>
+                </span>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <form th:action="@{/orders/guest/new}" th:object="${guestOrderForm}" method="post" novalidate>
+                <input type="hidden" th:field="*{productId}">
+
+                <p class="form-section-title">주문 정보</p>
+
+                <div class="form-group">
+                    <label class="form-label" for="quantity">수량 <span class="required">*</span></label>
+                    <input type="number" id="quantity" class="form-control" th:field="*{quantity}"
+                           th:errorclass="is-invalid" min="1" th:max="${product.stock}" required>
+                    <span class="form-help" th:text="'현재 재고 ' + ${product.stock} + '개'">재고</span>
+                    <span class="field-error" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="receiverName">받는 분 <span class="required">*</span></label>
+                    <input type="text" id="receiverName" class="form-control" th:field="*{receiverName}"
+                           th:errorclass="is-invalid" placeholder="홍길동" required maxlength="50">
+                    <span class="field-error" th:if="${#fields.hasErrors('receiverName')}"
+                          th:errors="*{receiverName}"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="receiverPhone">연락처 <span class="required">*</span></label>
+                    <input type="tel" id="receiverPhone" class="form-control" th:field="*{receiverPhone}"
+                           th:errorclass="is-invalid" placeholder="010-1234-5678"
+                           required pattern="01[016789]-?[0-9]{3,4}-?[0-9]{4}">
+                    <span class="form-help">주문 조회 시 이 번호가 필요합니다. 정확히 입력해주세요.</span>
+                    <span class="field-error" th:if="${#fields.hasErrors('receiverPhone')}"
+                          th:errors="*{receiverPhone}"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="address">배송 주소 <span class="required">*</span></label>
+                    <input type="text" id="address" class="form-control" th:field="*{address}"
+                           th:errorclass="is-invalid" placeholder="경기도 하남시 미사동 00로 00, 000호"
+                           required maxlength="255">
+                    <span class="field-error" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="memo">배송 요청사항</label>
+                    <input type="text" id="memo" class="form-control" th:field="*{memo}"
+                           placeholder="예) 부재 시 경비실에 맡겨주세요" maxlength="255">
+                </div>
+
+                <div class="notice-box" style="margin-bottom:20px">
+                    비회원 주문은 <strong>주문번호</strong>와 <strong>연락처</strong>로만 조회할 수 있습니다.<br>
+                    주문 완료 화면에 나오는 주문번호를 꼭 저장해두세요.
+                </div>
+
+                <div class="form-footer">
+                    <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-outline">취소</a>
+                    <button type="submit" class="btn btn-primary btn-lg" style="flex:1">주문하기</button>
+                </div>
+            </form>
+
+            <p class="auth-alt">
+                회원으로 주문하시겠어요? <a th:href="@{/members/login}">로그인</a>
+            </p>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+
+<script>
+    (function () {
+        const form = document.querySelector('form[action$="/orders/guest/new"]');
+        if (!form) return;
+        form.addEventListener('submit', function (e) {
+            if (!form.checkValidity()) {
+                e.preventDefault();
+                form.reportValidity();
+            }
+        });
+    })();
+</script>
+</body>
+
+</html>

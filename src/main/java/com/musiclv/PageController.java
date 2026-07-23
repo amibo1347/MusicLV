@@ -8,18 +8,26 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/**
+ * 소개 · 가이드처럼 DB 없이 보여주는 정적 성격의 페이지.
+ */
 @Controller
 @RequiredArgsConstructor
-public class HomeController {
+public class PageController {
 
     private final ProductService productService;
     private final PerformanceService performanceService;
 
-    @GetMapping("/")
-    public String index(Model model) {
+    @GetMapping("/about")
+    public String about(Model model) {
+        model.addAttribute("productCount", productService.count());
+        model.addAttribute("performanceCount", performanceService.count());
+        return "page/about";
+    }
+
+    @GetMapping("/guide")
+    public String guide(Model model) {
         model.addAttribute("categories", Category.values());
-        model.addAttribute("latestProducts", productService.getLatest());
-        model.addAttribute("upcomingPerformances", performanceService.getUpcoming());
-        return "index";
+        return "page/guide";
     }
 }

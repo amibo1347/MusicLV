@@ -19,6 +19,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @EntityGraph(attributePaths = {"orderItems", "orderItems.product", "member"})
     Optional<Order> findWithItemsById(Long id);
 
+    boolean existsByOrderNumber(String orderNumber);
+
+    @EntityGraph(attributePaths = {"orderItems", "orderItems.product", "member"})
+    Optional<Order> findWithItemsByOrderNumber(String orderNumber);
+
     /** 관리자 주문 관리 — 상태로 걸러본다. null 이면 전체. */
     @Query("""
             select o from Order o join fetch o.member

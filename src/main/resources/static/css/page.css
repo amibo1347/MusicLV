@@ -1,0 +1,212 @@
+@charset 'utf-8';
+
+/* About / Guide 등 소개 성격의 페이지 */
+
+.page-hero {
+    padding: 20px 0 56px;
+    text-align: center;
+}
+
+.page-hero h1 {
+    font-size: 2.6rem;
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 16px;
+}
+
+.page-hero p {
+    max-width: 640px;
+    margin: 0 auto;
+    color: var(--text-dim);
+    font-size: 1.02rem;
+    line-height: 1.85;
+}
+
+.page-block {
+    padding: 46px 0;
+    border-top: 1px solid var(--border);
+}
+
+.page-block h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.page-block .lead {
+    color: var(--text-dim);
+    line-height: 1.85;
+    margin-bottom: 28px;
+    max-width: 760px;
+}
+
+/* 숫자로 보는 소개 */
+.stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 18px;
+}
+
+.stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 26px 22px;
+    text-align: center;
+}
+
+.stat-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1.2;
+}
+
+.stat-label {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+}
+
+/* 3단 소개 카드 */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 26px 24px;
+}
+
+.info-card h3 {
+    font-size: 1.08rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.info-card p {
+    color: var(--text-dim);
+    line-height: 1.8;
+    font-size: 0.93rem;
+}
+
+.info-card .step-no {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 12px;
+}
+
+/* 악기 가이드 표 */
+.guide-table td:first-child {
+    width: 130px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.guide-table .price-hint {
+    color: var(--text-dim);
+    white-space: nowrap;
+}
+
+/* FAQ — 별도 JS 없이 details 로 접었다 편다 */
+.faq-item {
+    border-bottom: 1px solid var(--border);
+}
+
+.faq-item > summary {
+    padding: 20px 40px 20px 2px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+    list-style: none;
+}
+
+.faq-item > summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq-item > summary::after {
+    content: '+';
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.3rem;
+    color: var(--text-dim);
+    line-height: 1;
+}
+
+.faq-item[open] > summary::after {
+    content: '\2212';
+}
+
+.faq-item > summary:hover {
+    color: #fff;
+}
+
+.faq-answer {
+    padding: 0 40px 22px 2px;
+    color: var(--text-dim);
+    line-height: 1.85;
+    font-size: 0.94rem;
+}
+
+.faq-answer a {
+    color: var(--accent);
+}
+
+/* 오시는 길 */
+.visit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.visit-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.visit-card dt {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+}
+
+.visit-card dd {
+    margin-bottom: 16px;
+    line-height: 1.7;
+}
+
+.visit-card dd:last-child {
+    margin-bottom: 0;
+}
+
+.page-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+@media (max-width: 640px) {
+    .page-hero h1 {
+        font-size: 1.9rem;
+    }
+
+    .page-block {
+        padding: 34px 0;
+    }
+}

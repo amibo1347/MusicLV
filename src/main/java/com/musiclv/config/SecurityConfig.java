@@ -25,13 +25,18 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/js/**", "/img/**", "/media/**", "/favicon.ico").permitAll()
                         // 오류 페이지까지 인증을 걸면 예외가 전부 로그인으로 튕겨 원인을 못 본다
                         .requestMatchers("/error").permitAll()
-                        // 메인, 상품 목록/상세/검색은 비회원도 볼 수 있다
+                        // 메인, 상품·공연 목록/상세/검색은 비회원도 볼 수 있다
                         .requestMatchers("/", "/products", "/products/**").permitAll()
+                        .requestMatchers("/tickets", "/tickets/*").permitAll()
+                        .requestMatchers("/about", "/guide").permitAll()
                         .requestMatchers("/members/signup", "/members/login").permitAll()
+                        // 비회원 주문·주문조회. /orders/** 규칙보다 먼저 와야 한다.
+                        .requestMatchers("/orders/guest", "/orders/guest/**").permitAll()
                         // 관리자 영역
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        // 장바구니/주문/마이페이지는 로그인 필요
-                        .requestMatchers("/cart/**", "/orders/**", "/members/mypage").authenticated()
+                        // 장바구니/주문/예매/마이페이지는 로그인 필요
+                        .requestMatchers("/cart/**", "/orders/**", "/bookings/**",
+                                "/tickets/*/book", "/members/mypage").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

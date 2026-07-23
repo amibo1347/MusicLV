@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('주문 완료', 'auth')}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('store')}"></header>
+
+<main class="page">
+    <div class="auth-wrap">
+        <div class="auth-head">
+            <h1 class="page-title">주문이 완료되었습니다</h1>
+            <p class="page-desc">아래 주문번호로 배송 상태를 확인할 수 있습니다.</p>
+        </div>
+
+        <div class="form-card">
+            <p class="form-section-title">주문번호</p>
+
+            <div class="order-number-box">
+                <span class="order-number" id="orderNumber" th:text="${orderNumber}">MLV-00000000-XXXXXX</span>
+                <button type="button" class="btn btn-outline btn-sm" id="copyBtn">복사</button>
+            </div>
+
+            <div class="notice-box">
+                <strong style="color:var(--danger)">주문번호를 꼭 저장해두세요.</strong><br>
+                비회원 주문은 <strong>주문번호</strong>와 주문 시 입력한 <strong>연락처</strong>로만 조회할 수 있습니다.
+                번호를 잃어버리면 주문 내역을 찾을 수 없습니다.
+            </div>
+
+            <div class="form-footer">
+                <a th:href="@{/products}" class="btn btn-outline">계속 쇼핑하기</a>
+                <a th:href="@{/orders/guest}" class="btn btn-primary" style="flex:1">주문 조회하기</a>
+            </div>
+
+            <p class="auth-alt">
+                다음부터는 더 간편하게. <a th:href="@{/members/signup}">회원가입하기</a>
+            </p>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+
+<script>
+    (function () {
+        const btn = document.getElementById('copyBtn');
+        const target = document.getElementById('orderNumber');
+        if (!btn || !target) return;
+        btn.addEventListener('click', function () {
+            const text = target.textContent.trim();
+            // clipboard API 는 https 에서만 동작하므로 실패 시 수동 선택으로 넘긴다
+            const done = function () {
+                btn.textContent = '복사됨';
+                setTimeout(function () { btn.textContent = '복사'; }, 1500);
+            };
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(done).catch(select);
+            } else {
+                select();
+            }
+            function select() {
+                const range = document.createRange();
+                range.selectNodeContents(target);
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+                btn.textContent = '드래그해 복사';
+                setTimeout(function () { btn.textContent = '복사'; }, 2000);
+            }
+        });
+    })();
+</script>
+</body>
+
+</html>

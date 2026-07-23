@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('예매 내역', null)}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('')}"></header>
+
+<main class="page">
+    <div class="container">
+        <h1 class="page-title">예매 내역</h1>
+        <p class="page-desc" th:text="'전체 ' + ${bookings.size()} + '건'">0건</p>
+
+        <div th:replace="~{fragments/layout :: flash}"></div>
+
+        <div class="table-wrap" th:if="${!bookings.isEmpty()}">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>예매번호</th>
+                    <th>예매일</th>
+                    <th>공연</th>
+                    <th>관람일</th>
+                    <th class="num">인원</th>
+                    <th class="num">결제금액</th>
+                    <th class="center">상태</th>
+                    <th class="center"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="b : ${bookings}">
+                    <td th:text="'#' + ${b.id}">#1</td>
+                    <td th:text="${#temporals.format(b.bookedAt, 'yyyy-MM-dd')}">-</td>
+                    <td th:text="${b.performance.title}">공연</td>
+                    <td th:text="${#temporals.format(b.viewDate, 'yyyy-MM-dd')}">-</td>
+                    <td class="num" th:text="${b.quantity} + '매'">0매</td>
+                    <td class="num" th:text="${#numbers.formatInteger(b.totalAmount, 3, 'COMMA')} + '원'">0원</td>
+                    <td class="center">
+                        <span class="status" th:classappend="'status-' + ${b.status}"
+                              th:text="${b.status.label}">-</span>
+                    </td>
+                    <td class="center">
+                        <a th:href="@{/bookings/{id}(id=${b.id})}" class="btn btn-outline btn-sm">상세</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="empty" th:if="${bookings.isEmpty()}">
+            <p class="empty-title">아직 예매한 공연이 없습니다.</p>
+            <a th:href="@{/tickets}" class="btn btn-primary">공연 보러 가기</a>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+</body>
+
+</html>

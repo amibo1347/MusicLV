@@ -21,7 +21,15 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    /**
+     * 고객에게 보여주는 주문번호. 비회원이 나중에 주문을 찾을 때 쓰는 열쇠라 추측이 어려워야 한다.
+     * (기존 주문 데이터를 위해 DB 제약은 unique 만 두고, 값은 항상 코드에서 채운다)
+     */
+    @Column(unique = true, length = 30)
+    private String orderNumber;
+
+    /** 비회원 주문이면 null 이다. */
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -47,7 +55,9 @@ public class Order {
     @Column(nullable = false)
     private LocalDateTime orderedAt;
 
-    private Order(Member member, String receiverName, String receiverPhone, String address, String memo) {
+    private Order(String orderNumber, Member member, String receiverName, String receiverPhone,
+                  String address, String memo) {
+        this.orderNumber = orderNumber;
         this.member = member;
         this.receiverName = receiverName;
         this.receiverPhone = receiverPhone;
@@ -57,13 +67,39 @@ public class Order {
         this.orderedAt = LocalDateTime.now();
     }
 
-    public static Order create(Member member, String receiverName, String receiverPhone,
+    /** 회원 주문. member 가 null 이면 비회원 주문이 된다. */
+    public static Order create(String orderNumber, Member member, String receiverName, String receiverPhone,
                                String address, String memo, List<OrderItem> items) {
-        Order order = new Order(member, receiverName, receiverPhone, address, memo);
+        Order order = new Order(orderNumber, member, receiverName, receiverPhone, address, memo);
         for (OrderItem item : items) {
             order.addItem(item);
         }
         return order;
+    }
+
+    public boolean isGuestOrder() {
+        return member == null;
+    }
+
+    /** 주문자 이름 — 비회원이면 받는 분 이름을 그대로 쓴다. */
+    public String getOrdererName() {
+        return member != null ? member.getName() : receiverName;
+    }
+
+    public String getOrdererEmail() {
+        return member != null ? member.getEmail() : "비회원";
+    }
+
+    /** 비회원 주문 조회 시 연락처가 맞는지 확인한다. 하이픈 유무는 무시한다. */
+    public boolean matchesPhone(String phone) {
+        if (phone == null) {
+            return false;
+        }
+        return normalizePhone(receiverPhone).equals(normalizePhone(phone));
+    }
+
+    private static String normalizePhone(String phone) {
+        return phone == null ? "" : phone.replaceAll("[^0-9]", "");
     }
 
     private void addItem(OrderItem item) {

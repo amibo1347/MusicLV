@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('예매 상세', null)}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('')}"></header>
+
+<main class="page">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <h1 class="page-title" th:text="'예매 #' + ${booking.id}">예매</h1>
+                <p class="page-desc" style="margin:0"
+                   th:text="${#temporals.format(booking.bookedAt, 'yyyy년 M월 d일 HH:mm')} + ' 예매'">-</p>
+            </div>
+            <span class="status" th:classappend="'status-' + ${booking.status}"
+                  th:text="${booking.status.label}">상태</span>
+        </div>
+
+        <div th:replace="~{fragments/layout :: flash}"></div>
+
+        <div class="order-info-card">
+            <dl>
+                <div class="order-info-row">
+                    <dt>공연</dt>
+                    <dd>
+                        <a th:href="@{/tickets/{id}(id=${booking.performance.id})}"
+                           th:text="${booking.performance.title}">공연명</a>
+                    </dd>
+                </div>
+                <div class="order-info-row">
+                    <dt>공연장</dt>
+                    <dd th:text="${booking.performance.venue}">-</dd>
+                </div>
+                <div class="order-info-row">
+                    <dt>관람일</dt>
+                    <dd th:text="${#temporals.format(booking.viewDate, 'yyyy년 M월 d일 (E)')}">-</dd>
+                </div>
+                <div class="order-info-row">
+                    <dt>관람시간</dt>
+                    <dd th:text="${booking.performance.runningTime} + '분'">-</dd>
+                </div>
+                <div class="order-info-row">
+                    <dt>예매자</dt>
+                    <dd th:text="${booking.bookerName}">-</dd>
+                </div>
+                <div class="order-info-row">
+                    <dt>연락처</dt>
+                    <dd th:text="${booking.bookerPhone}">-</dd>
+                </div>
+                <div class="order-info-row">
+                    <dt>매수</dt>
+                    <dd th:text="${booking.quantity} + '매 × ' + ${#numbers.formatInteger(booking.bookingPrice, 3, 'COMMA')} + '원'">-</dd>
+                </div>
+            </dl>
+        </div>
+
+        <div class="summary-bar">
+            <span class="summary-label">총 결제금액</span>
+            <span class="summary-total"
+                  th:text="${#numbers.formatInteger(booking.totalAmount, 3, 'COMMA')} + '원'">0원</span>
+        </div>
+
+        <div class="cart-actions">
+            <a th:href="@{/bookings}" class="btn btn-outline">예매 내역으로</a>
+            <form th:action="@{/bookings/{id}/cancel(id=${booking.id})}" method="post"
+                  th:if="${booking.status.cancellable}"
+                  onsubmit="return confirm('예매를 취소하시겠습니까? 좌석이 복구됩니다.');">
+                <button type="submit" class="btn btn-danger">예매 취소</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+</body>
+
+</html>

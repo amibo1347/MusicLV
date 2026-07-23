@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/layout :: commonHead('주문 상세', 'shop')}"></head>
+<head th:replace="~{fragments/layout :: commonHead('주문 상세', null)}"></head>
 
 <body>
 <header th:replace="~{fragments/layout :: siteHeader('')}"></header>
@@ -10,7 +10,7 @@
     <div class="container">
         <div class="section-head">
             <div>
-                <h1 class="page-title" th:text="'주문 #' + ${order.id}">주문</h1>
+                <h1 class="page-title" th:text="${order.orderNumber} ?: ('주문 #' + ${order.id})">주문</h1>
                 <p class="page-desc" style="margin:0"
                    th:text="${#temporals.format(order.orderedAt, 'yyyy년 M월 d일 HH:mm')} + ' 주문'">-</p>
             </div>
@@ -81,7 +81,8 @@
                   th:text="${#numbers.formatInteger(order.totalAmount, 3, 'COMMA')} + '원'">0원</span>
         </div>
 
-        <div class="cart-actions">
+        <!-- 비회원 조회는 주문번호로 들어온 것이라 취소·목록 이동을 제공하지 않는다 -->
+        <div class="cart-actions" th:unless="${guestView}">
             <a th:href="@{/orders}" class="btn btn-outline">주문 내역으로</a>
             <form th:action="@{/orders/{id}/cancel(id=${order.id})}" method="post"
                   th:if="${order.status.cancellable}"
@@ -89,6 +90,18 @@
                 <button type="submit" class="btn btn-danger">주문 취소</button>
             </form>
         </div>
+
+        <th:block th:if="${guestView}">
+            <div class="notice-box">
+                주문 취소나 배송 문의는 대표번호(2026-9999)로 연락 주세요.<br>
+                <a th:href="@{/members/signup}" style="color:var(--accent)">회원가입</a>을 하시면
+                주문 내역을 마이페이지에서 바로 관리할 수 있습니다.
+            </div>
+            <div class="cart-actions">
+                <a th:href="@{/products}" class="btn btn-outline">계속 쇼핑하기</a>
+                <a th:href="@{/orders/guest}" class="btn btn-outline">다른 주문 조회</a>
+            </div>
+        </th:block>
     </div>
 </main>
 

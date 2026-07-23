@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('공연 등록', null)}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('admin')}"></header>
+
+<main class="page">
+    <div class="container" style="max-width:760px">
+
+        <h1 class="page-title" th:text="${performanceForm.id == null} ? '공연 등록' : '공연 수정'">공연 등록</h1>
+        <p class="page-desc">예매를 받을 공연 정보를 입력해주세요.</p>
+
+        <div th:replace="~{fragments/layout :: flash}"></div>
+
+        <div class="form-card">
+            <form th:object="${performanceForm}" method="post" enctype="multipart/form-data"
+                  th:action="${performanceForm.id == null}
+                             ? @{/admin/performances}
+                             : @{/admin/performances/{id}(id=${performanceForm.id})}">
+
+                <input type="hidden" th:field="*{id}">
+
+                <div class="form-group">
+                    <label class="form-label" for="title">공연명 <span class="required">*</span></label>
+                    <input type="text" id="title" class="form-control" th:field="*{title}"
+                           th:errorclass="is-invalid" maxlength="150">
+                    <span class="field-error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="category">카테고리 <span class="required">*</span></label>
+                        <select id="category" class="form-control" th:field="*{category}"
+                                th:errorclass="is-invalid">
+                            <option value="">선택하세요</option>
+                            <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat.label}">-</option>
+                        </select>
+                        <span class="field-error" th:if="${#fields.hasErrors('category')}"
+                              th:errors="*{category}"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="venue">공연장 <span class="required">*</span></label>
+                        <input type="text" id="venue" class="form-control" th:field="*{venue}"
+                               th:errorclass="is-invalid" placeholder="블루스퀘어 신한카드홀" maxlength="120">
+                        <span class="field-error" th:if="${#fields.hasErrors('venue')}" th:errors="*{venue}"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="cast">출연진</label>
+                    <input type="text" id="cast" class="form-control" th:field="*{cast}"
+                           placeholder="쉼표로 구분해 입력하세요" maxlength="255">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="startDate">시작일 <span class="required">*</span></label>
+                        <input type="date" id="startDate" class="form-control" th:field="*{startDate}"
+                               th:errorclass="is-invalid">
+                        <span class="field-error" th:if="${#fields.hasErrors('startDate')}"
+                              th:errors="*{startDate}"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="endDate">종료일 <span class="required">*</span></label>
+                        <input type="date" id="endDate" class="form-control" th:field="*{endDate}"
+                               th:errorclass="is-invalid">
+                        <span class="field-error" th:if="${#fields.hasErrors('endDate')}"
+                              th:errors="*{endDate}"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="runningTime">관람시간 (분) <span class="required">*</span></label>
+                        <input type="number" id="runningTime" class="form-control" th:field="*{runningTime}"
+                               th:errorclass="is-invalid" min="1" placeholder="150">
+                        <span class="field-error" th:if="${#fields.hasErrors('runningTime')}"
+                              th:errors="*{runningTime}"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="ageRating">관람등급</label>
+                        <input type="text" id="ageRating" class="form-control" th:field="*{ageRating}"
+                               placeholder="8세 이상" maxlength="40">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="price">가격 (원) <span class="required">*</span></label>
+                        <input type="number" id="price" class="form-control" th:field="*{price}"
+                               th:errorclass="is-invalid" min="0">
+                        <span class="field-error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="seats">좌석 수 <span class="required">*</span></label>
+                        <input type="number" id="seats" class="form-control" th:field="*{seats}"
+                               th:errorclass="is-invalid" min="0">
+                        <span class="field-error" th:if="${#fields.hasErrors('seats')}" th:errors="*{seats}"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="description">공연 소개</label>
+                    <textarea id="description" class="form-control" th:field="*{description}"
+                              placeholder="공연의 줄거리, 특징, 관람 포인트 등을 적어주세요."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="posterFile">포스터 이미지</label>
+
+                    <div th:if="*{posterUrl}" style="margin-bottom:12px">
+                        <img th:src="*{posterUrl}" alt="현재 포스터"
+                             style="max-width:200px; border-radius:8px; border:1px solid var(--border)">
+                        <p class="form-label" style="margin-top:6px">
+                            새 파일을 선택하지 않으면 현재 포스터가 유지됩니다.
+                        </p>
+                    </div>
+
+                    <input type="file" id="posterFile" class="form-control" th:field="*{posterFile}"
+                           accept="image/png, image/jpeg, image/gif, image/webp">
+                    <span class="field-error" th:if="${#fields.hasErrors('posterFile')}"
+                          th:errors="*{posterFile}"></span>
+                </div>
+
+                <div class="form-footer">
+                    <a th:href="@{/admin/performances}" class="btn btn-outline">취소</a>
+                    <button type="submit" class="btn btn-primary" style="flex:1"
+                            th:text="${performanceForm.id == null} ? '등록하기' : '수정하기'">등록하기</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+</body>
+
+</html>

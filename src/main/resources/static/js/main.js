@@ -8,7 +8,8 @@
 
     const sectionUI = [
         {   // 0번째 section의 UI정보
-            heightMultiple: 4,
+            // 쇼핑 영역이 아래에 이어지므로 연출 구간을 너무 길게 잡지 않는다
+            heightMultiple: 3,
             scrollHeight: 0,
             elems: {
                 section: document.querySelector('#scroll-section-0'),
@@ -23,7 +24,8 @@
 
         },
         {   // 1번째 section의 UI정보
-            heightMultiple: 4,
+            // 쇼핑 영역이 아래에 이어지므로 연출 구간을 너무 길게 잡지 않는다
+            heightMultiple: 3,
             scrollHeight: 0,
             elems: {
                 canvasContainer: document.querySelector('.section1-canvas'),
@@ -54,19 +56,6 @@
                 messageC_transform: [0, -60, { start: 0.61, end: 0.7 }],
             },
 
-        },
-        {   // 2번째 section의 UI정보
-            heightMultiple: 4,
-            scrollHeight: 0,
-            elems: {
-                section: document.querySelector('#scroll-section-2'),
-                textList: document.querySelector('.change_textlist'),
-                texts: document.querySelectorAll('.change_textlist > h1'),
-            },
-            values: {
-                textOpacityIn: [],
-                textOpacityOut: [],
-            }
         }];
 
 
@@ -91,6 +80,15 @@
 
         return prevHeight;
     }
+    function getTotalScrollHeight() { // 스크롤 연출 구간 전체 길이
+        let total = 0;
+
+        for (let i = 0; i < sectionUI.length; i++) {
+            total += sectionUI[i].scrollHeight;
+        }
+
+        return total;
+    }
     function getCurrentSection() {
         let curSection = currentSection;
 
@@ -99,6 +97,15 @@
         }
         else if (yOffset < prevScrollHeight) {
             curSection--;
+        }
+
+        // 연출 구간 아래로는 쇼핑 영역이 이어진다.
+        // 범위를 넘기면 sectionUI[curSection] 이 없어 스크립트가 죽는다.
+        if (curSection < 0) {
+            curSection = 0;
+        }
+        else if (curSection > sectionUI.length - 1) {
+            curSection = sectionUI.length - 1;
         }
 
         return curSection;
@@ -118,7 +125,14 @@
 
         sectionOffset = getSectionOffset();
 
-        document.body.setAttribute('id', `show-section-${currentSection}`);
+        // 연출 구간을 다 지나면 고정 요소를 모두 감춘다.
+        // (일치하는 CSS 가 없는 id 를 주면 .sticky-element 는 display:none 상태로 남는다)
+        if (yOffset >= getTotalScrollHeight()) {
+            document.body.setAttribute('id', 'show-shop');
+        }
+        else {
+            document.body.setAttribute('id', `show-section-${currentSection}`);
+        }
     }
 
     function getAssignedValue(value) {
@@ -193,35 +207,6 @@
     }
 
 
-    let section2Played = false;
-    let section2Timer = null;
-
-    function startSection2TextBurst() {
-        const s2 = sectionUI[2];
-        const texts = s2.elems.texts;
-
-        if (!texts || texts.length === 0) return;
-
-        texts.forEach(t => t.style.opacity = 0);
-
-        let idx = 0;
-
-        if (section2Timer) clearInterval(section2Timer);
-
-        const speed = 180;
-
-        section2Timer = setInterval(() => {
-            texts.forEach(t => t.style.opacity = 0);
-
-            if (idx >= texts.length) {
-                clearInterval(section2Timer); // 타이머 종료
-                return;
-            }
-
-            texts[idx].style.opacity = 1;
-            idx++;
-        }, speed);
-    }
     function playAnimation() {
         let opacity = 0;
         let imageIndex = 0;
@@ -292,14 +277,6 @@
                     elems.messageB.style.opacity = 0;
                     elems.messageC.style.opacity = 0;
                 }
-                break;
-
-            case 2:
-                if (!section2Played && scrollRatio > 0.15) {
-                    startSection2TextBurst();
-                    section2Played = true;
-                }
-
                 break;
 
         }

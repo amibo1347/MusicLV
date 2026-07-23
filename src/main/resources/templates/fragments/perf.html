@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>공연 조각</title></head>
+<body>
+
+<!-- 공연 카드 -->
+<a th:fragment="perfCard(p)" class="perf-card" th:href="@{/tickets/{id}(id=${p.id})}">
+    <div class="perf-poster">
+        <img th:if="${p.posterUrl}" th:src="${p.posterUrl}" th:alt="${p.title}">
+        <span th:unless="${p.posterUrl}" class="poster-placeholder">
+            <span class="poster-cat" th:text="${p.category.label}">카테고리</span>
+            <span class="poster-title" th:text="${p.title}">공연명</span>
+        </span>
+        <span th:if="${p.closed}" class="sold-out-badge">공연 종료</span>
+        <span th:if="${!p.closed and p.soldOut}" class="sold-out-badge">매진</span>
+    </div>
+    <div class="perf-body">
+        <span class="perf-cat" th:text="${p.category.label}">카테고리</span>
+        <span class="perf-title" th:text="${p.title}">공연명</span>
+        <span class="perf-venue" th:text="${p.venue}">공연장</span>
+        <span class="perf-date"
+              th:text="${#temporals.format(p.startDate, 'yyyy.MM.dd')} + ' ~ ' + ${#temporals.format(p.endDate, 'yyyy.MM.dd')}">기간</span>
+        <span class="perf-price" th:text="${#numbers.formatInteger(p.price, 3, 'COMMA')} + '원~'">0원</span>
+    </div>
+</a>
+
+</body>
+</html>

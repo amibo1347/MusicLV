@@ -4,6 +4,8 @@ import com.musiclv.cart.CartItem;
 import com.musiclv.cart.CartService;
 import com.musiclv.member.Member;
 import com.musiclv.member.MemberService;
+import com.musiclv.product.Product;
+import com.musiclv.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MemberService memberService;
     private final CartService cartService;
+    private final ProductService productService;
+    private final OrderNumberGenerator orderNumberGenerator;
 
     /** 장바구니 전체를 주문으로 전환하고 장바구니를 비운다. */
     @Transactional
@@ -38,9 +42,32 @@ public class OrderService {
         return orderId;
     }
 
+    /** 비회원이 상품 하나를 바로 주문한다. 장바구니를 거치지 않는다. */
+    @Transactional
+    public Order orderAsGuest(GuestOrderForm form) {
+        Product product = productService.getById(form.getProductId());
+        OrderItem item = OrderItem.of(product, form.getQuantity());
+        Order order = build(null, form.toOrderForm(), List.of(item));
+        return orderRepository.save(order);
+    }
+
+    /** 주문번호와 연락처가 모두 맞아야 보여준다. */
+    public Order findGuestOrder(String orderNumber, String phone) {
+        Order order = orderRepository.findWithItemsByOrderNumber(orderNumber.trim())
+                .filter(o -> o.matchesPhone(phone))
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "주문번호 또는 연락처가 일치하지 않습니다. 다시 확인해주세요."));
+        return order;
+    }
+
     private Long save(Long memberId, OrderForm form, List<OrderItem> items) {
         Member member = memberService.getById(memberId);
-        Order order = Order.create(
+        return orderRepository.save(build(member, form, items)).getId();
+    }
+
+    private Order build(Member member, OrderForm form, List<OrderItem> items) {
+        return Order.create(
+                orderNumberGenerator.generate(),
                 member,
                 form.getReceiverName(),
                 form.getReceiverPhone(),
@@ -48,7 +75,6 @@ public class OrderService {
                 form.getMemo(),
                 items
         );
-        return orderRepository.save(order).getId();
     }
 
     public List<Order> getMyOrders(Long memberId) {

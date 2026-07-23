@@ -1,66 +1,97 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/layout :: commonHead('회원가입', null)}"></head>
+<head th:replace="~{fragments/layout :: commonHead('회원가입', 'auth')}"></head>
 
 <body>
 <header th:replace="~{fragments/layout :: siteHeader('')}"></header>
 
 <main class="page">
-    <div class="container-narrow">
-        <h1 class="page-title">회원가입</h1>
-        <p class="page-desc">MusicLV 회원이 되면 장바구니와 주문 내역을 이용할 수 있습니다.</p>
+    <div class="auth-wrap">
+        <div class="auth-head">
+            <h1 class="page-title">회원가입</h1>
+            <p class="page-desc">가입하면 장바구니·주문 내역·공연 예매를 이용할 수 있습니다.</p>
+        </div>
 
         <div th:replace="~{fragments/layout :: flash}"></div>
 
         <div class="form-card">
-            <form th:action="@{/members/signup}" th:object="${signupForm}" method="post">
+            <form th:action="@{/members/signup}" th:object="${signupForm}" method="post" novalidate>
+
+                <!-- 계정 정보 -->
+                <p class="form-section-title">계정 정보</p>
 
                 <div class="form-group">
-                    <label class="form-label" for="email">이메일</label>
+                    <label class="form-label" for="email">이메일 <span class="required">*</span></label>
                     <input type="email" id="email" class="form-control" th:field="*{email}"
-                           placeholder="musiclv@example.com" autocomplete="username">
+                           th:errorclass="is-invalid"
+                           placeholder="musiclv@example.com" autocomplete="username"
+                           required maxlength="100">
+                    <span class="form-help">로그인 아이디로 사용됩니다.</span>
                     <span class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="password">비밀번호</label>
+                    <label class="form-label" for="password">비밀번호 <span class="required">*</span></label>
                     <input type="password" id="password" class="form-control" th:field="*{password}"
-                           placeholder="8자 이상" autocomplete="new-password">
+                           th:errorclass="is-invalid"
+                           placeholder="영문과 숫자를 포함한 8자 이상" autocomplete="new-password"
+                           required minlength="8" maxlength="64">
+                    <span class="form-help">영문과 숫자를 각각 하나 이상 포함해야 합니다.</span>
                     <span class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="passwordConfirm">비밀번호 확인</label>
+                    <label class="form-label" for="passwordConfirm">비밀번호 확인 <span class="required">*</span></label>
                     <input type="password" id="passwordConfirm" class="form-control" th:field="*{passwordConfirm}"
-                           autocomplete="new-password">
+                           th:errorclass="is-invalid"
+                           placeholder="비밀번호를 한 번 더 입력해주세요" autocomplete="new-password" required>
+                    <span class="field-error" id="pwMismatch" hidden>비밀번호가 일치하지 않습니다.</span>
                     <span class="field-error" th:if="${#fields.hasErrors('passwordConfirm')}"
                           th:errors="*{passwordConfirm}"></span>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="name">이름</label>
-                        <input type="text" id="name" class="form-control" th:field="*{name}">
-                        <span class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="phone">연락처</label>
-                        <input type="text" id="phone" class="form-control" th:field="*{phone}"
-                               placeholder="010-0000-0000">
-                        <span class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
-                    </div>
+                <!-- 배송 정보 -->
+                <p class="form-section-title">배송 정보</p>
+
+                <div class="form-group">
+                    <label class="form-label" for="name">이름 <span class="required">*</span></label>
+                    <input type="text" id="name" class="form-control" th:field="*{name}"
+                           th:errorclass="is-invalid"
+                           placeholder="홍길동" autocomplete="name" required maxlength="50">
+                    <span class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="address">주소</label>
+                    <label class="form-label" for="phone">연락처 <span class="required">*</span></label>
+                    <input type="tel" id="phone" class="form-control" th:field="*{phone}"
+                           th:errorclass="is-invalid"
+                           placeholder="010-1234-5678" autocomplete="tel"
+                           required pattern="01[016789]-?[0-9]{3,4}-?[0-9]{4}">
+                    <span class="form-help">배송 안내를 받을 번호를 입력해주세요.</span>
+                    <span class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="address">주소 <span class="required">*</span></label>
                     <input type="text" id="address" class="form-control" th:field="*{address}"
-                           placeholder="배송받을 주소">
+                           th:errorclass="is-invalid"
+                           placeholder="경기도 하남시 미사동 00로 00, 000호" autocomplete="street-address"
+                           required maxlength="255">
                     <span class="field-error" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></span>
                 </div>
 
+                <!-- 약관 -->
+                <div class="form-group">
+                    <label class="checkbox-row" for="agreed">
+                        <input type="checkbox" id="agreed" th:field="*{agreed}" required>
+                        <span>이용약관 및 개인정보 수집·이용에 동의합니다. <span class="required">*</span></span>
+                    </label>
+                    <span class="field-error" th:if="${#fields.hasErrors('agreed')}" th:errors="*{agreed}"></span>
+                </div>
+
                 <div class="form-footer">
-                    <button type="submit" class="btn btn-primary btn-block">가입하기</button>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">가입하기</button>
                 </div>
             </form>
 
@@ -72,6 +103,38 @@
 </main>
 
 <footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+
+<script>
+    // 서버 검증과 별개로, 제출 전에 비밀번호 일치를 바로 알려준다.
+    (function () {
+        const form = document.querySelector('form[action$="/members/signup"]');
+        if (!form) return;
+        const pw = document.getElementById('password');
+        const pw2 = document.getElementById('passwordConfirm');
+        const msg = document.getElementById('pwMismatch');
+
+        function checkMatch() {
+            const mismatch = pw2.value.length > 0 && pw.value !== pw2.value;
+            msg.hidden = !mismatch;
+            pw2.classList.toggle('is-invalid', mismatch);
+            pw2.setCustomValidity(mismatch ? '비밀번호가 일치하지 않습니다.' : '');
+        }
+
+        pw.addEventListener('input', checkMatch);
+        pw2.addEventListener('input', checkMatch);
+
+        // novalidate 를 걸어둔 상태라 제출 시점에 직접 검사를 돌린다.
+        form.addEventListener('submit', function (e) {
+            checkMatch();
+            if (!form.checkValidity()) {
+                e.preventDefault();
+                form.reportValidity();
+                const first = form.querySelector(':invalid');
+                if (first) first.focus();
+            }
+        });
+    })();
+</script>
 </body>
 
 </html>

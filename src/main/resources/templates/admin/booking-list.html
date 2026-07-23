@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('예매 관리', null)}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('admin')}"></header>
+
+<main class="page">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <h1 class="page-title">예매 관리</h1>
+                <p class="page-desc" style="margin:0"
+                   th:text="'전체 ' + ${bookings.totalElements} + '건의 예매'">0건</p>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap">
+                <a th:href="@{/admin/products}" class="btn btn-outline">상품 관리</a>
+                <a th:href="@{/admin/orders}" class="btn btn-outline">주문 관리</a>
+                <a th:href="@{/admin/performances}" class="btn btn-outline">공연 관리</a>
+            </div>
+        </div>
+
+        <div th:replace="~{fragments/layout :: flash}"></div>
+
+        <div class="filter-bar">
+            <a class="chip" th:classappend="${selectedStatus == null} ? ' active'"
+               th:href="@{/admin/bookings}">전체</a>
+            <a th:each="st : ${statuses}" class="chip"
+               th:classappend="${selectedStatus != null and selectedStatus.name == st.name} ? ' active'"
+               th:href="@{/admin/bookings(status=${st})}" th:text="${st.label}">상태</a>
+        </div>
+
+        <div class="table-wrap" th:if="${bookings.hasContent()}">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>예매번호</th>
+                    <th>예매일시</th>
+                    <th>예매자</th>
+                    <th>공연</th>
+                    <th>관람일</th>
+                    <th class="num">인원</th>
+                    <th class="num">결제금액</th>
+                    <th class="center">상태</th>
+                    <th class="center">상태 변경</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="b : ${bookings.content}">
+                    <td>
+                        <a th:href="@{/bookings/{id}(id=${b.id})}" th:text="'#' + ${b.id}">#1</a>
+                    </td>
+                    <td th:text="${#temporals.format(b.bookedAt, 'yyyy-MM-dd HH:mm')}">-</td>
+                    <td>
+                        <span th:text="${b.memberName}">이름</span><br>
+                        <span class="cart-product-brand" th:text="${b.memberEmail}">이메일</span>
+                    </td>
+                    <td th:text="${b.performanceTitle}">공연</td>
+                    <td th:text="${#temporals.format(b.viewDate, 'yyyy-MM-dd')}">-</td>
+                    <td class="num" th:text="${b.quantity} + '매'">0매</td>
+                    <td class="num" th:text="${#numbers.formatInteger(b.totalAmount, 3, 'COMMA')} + '원'">0원</td>
+                    <td class="center">
+                        <span class="status" th:classappend="'status-' + ${b.status}"
+                              th:text="${b.status.label}">-</span>
+                    </td>
+                    <td class="center">
+                        <form th:action="@{/admin/bookings/{id}/status(id=${b.id})}" method="post"
+                              style="display:flex; gap:6px; justify-content:center">
+                            <select name="status" class="select">
+                                <option th:each="st : ${statuses}" th:value="${st}"
+                                        th:selected="${st.name == b.status.name}"
+                                        th:text="${st.label}">-</option>
+                            </select>
+                            <button type="submit" class="btn btn-outline btn-sm">변경</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="empty" th:unless="${bookings.hasContent()}">
+            <p class="empty-title">해당 조건의 예매가 없습니다.</p>
+        </div>
+
+        <nav class="pagination" th:if="${bookings.totalPages > 1}">
+            <a th:if="${!bookings.first}"
+               th:href="@{/admin/bookings(status=${selectedStatus}, page=${bookings.number - 1})}">이전</a>
+            <span th:unless="${!bookings.first}" class="disabled">이전</span>
+            <th:block th:each="i : ${#numbers.sequence(0, bookings.totalPages - 1)}">
+                <span th:if="${i == bookings.number}" class="current" th:text="${i + 1}">1</span>
+                <a th:unless="${i == bookings.number}"
+                   th:href="@{/admin/bookings(status=${selectedStatus}, page=${i})}" th:text="${i + 1}">1</a>
+            </th:block>
+            <a th:if="${!bookings.last}"
+               th:href="@{/admin/bookings(status=${selectedStatus}, page=${bookings.number + 1})}">다음</a>
+            <span th:unless="${!bookings.last}" class="disabled">다음</span>
+        </nav>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+</body>
+
+</html>

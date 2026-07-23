@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('About', 'page')}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('about')}"></header>
+
+<main class="page">
+    <div class="container">
+
+        <section class="page-hero">
+            <h1>소리를 고르는 일은<br>결국 나를 고르는 일입니다</h1>
+            <p>
+                MusicLV는 밴드를 하는 사람들이 만든 악기 상점입니다.
+                합주실에서 부딪히며 배운 것들을 그대로 옮겨왔습니다.
+                첫 기타를 고르는 사람에게도, 열 번째 스네어를 찾는 사람에게도
+                같은 무게로 설명하려 합니다.
+            </p>
+        </section>
+
+        <section class="page-block">
+            <h2>숫자로 보는 MusicLV</h2>
+            <p class="lead">지금 이 순간 MusicLV가 다루고 있는 것들입니다.</p>
+            <div class="stat-row">
+                <div class="stat-card">
+                    <span class="stat-value" th:text="${productCount}">0</span>
+                    <span class="stat-label">취급 악기</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" th:text="${performanceCount}">0</span>
+                    <span class="stat-label">예매 가능 공연</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">8</span>
+                    <span class="stat-label">악기 카테고리</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">2~3일</span>
+                    <span class="stat-label">평균 출고 기간</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="page-block">
+            <h2>우리가 지키는 세 가지</h2>
+            <p class="lead">
+                악기는 사진만 보고 사기 어려운 물건입니다.
+                그 간극을 줄이려고 다음 세 가지를 지킵니다.
+            </p>
+            <div class="info-grid">
+                <div class="info-card">
+                    <span class="step-no">01</span>
+                    <h3>과장하지 않는 설명</h3>
+                    <p>
+                        입문용은 입문용이라고 씁니다. 이 악기가 어떤 사람에게 맞고
+                        어떤 사람에게는 아쉬운지를 함께 적습니다.
+                    </p>
+                </div>
+                <div class="info-card">
+                    <span class="step-no">02</span>
+                    <h3>재고를 정직하게</h3>
+                    <p>
+                        남은 수량을 그대로 보여줍니다. 품절이면 품절이라고 표시하고,
+                        주문이 들어오면 그 자리에서 재고가 줄어듭니다.
+                    </p>
+                </div>
+                <div class="info-card">
+                    <span class="step-no">03</span>
+                    <h3>연주까지 이어지도록</h3>
+                    <p>
+                        악기를 파는 데서 끝내지 않습니다. 무대를 보러 가는 일까지
+                        같은 자리에서 할 수 있게 공연 예매를 함께 운영합니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="page-block">
+            <h2>오시는 길</h2>
+            <p class="lead">
+                직접 소리를 들어보고 싶다면 언제든 들러주세요. 시연용 악기를 준비해두고 있습니다.
+            </p>
+            <div class="visit-grid">
+                <dl class="visit-card">
+                    <dt>주소</dt>
+                    <dd>경기도 하남시 미사동 풀스택 캠프 3층</dd>
+                    <dt>영업시간</dt>
+                    <dd>평일 11:00 ~ 20:00<br>주말 12:00 ~ 18:00 (수요일 휴무)</dd>
+                </dl>
+                <dl class="visit-card">
+                    <dt>대표번호</dt>
+                    <dd>2026-9999</dd>
+                    <dt>이메일</dt>
+                    <dd>master@fullstack.co.kr</dd>
+                </dl>
+                <dl class="visit-card">
+                    <dt>상호</dt>
+                    <dd>(주)풀스택 부트캠프</dd>
+                    <dt>대표</dt>
+                    <dd>강태호</dd>
+                    <dt>사업자등록번호</dt>
+                    <dd>123-45-678</dd>
+                </dl>
+            </div>
+
+            <div class="page-cta">
+                <a th:href="@{/products}" class="btn btn-primary">악기 둘러보기</a>
+                <a th:href="@{/tickets}" class="btn btn-outline">공연 예매하기</a>
+                <a th:href="@{/guide}" class="btn btn-outline">구매 가이드 보기</a>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+</body>
+
+</html>

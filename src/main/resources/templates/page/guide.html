@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('Guide', 'page')}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('guide')}"></header>
+
+<main class="page">
+    <div class="container">
+
+        <section class="page-hero">
+            <h1>무엇부터 사야 할지<br>모르겠다면</h1>
+            <p>
+                악기는 값이 아니라 목적으로 고르는 물건입니다.
+                무엇을 하고 싶은지부터 정하면 선택지는 생각보다 빨리 좁혀집니다.
+                처음 사는 사람이 가장 많이 묻는 것들을 모았습니다.
+            </p>
+        </section>
+
+        <!-- 3단계 가이드 -->
+        <section class="page-block">
+            <h2>고르는 순서</h2>
+            <p class="lead">이 순서대로만 정해도 크게 후회할 일은 없습니다.</p>
+            <div class="info-grid">
+                <div class="info-card">
+                    <span class="step-no">STEP 1</span>
+                    <h3>어디서 연주할지 정하기</h3>
+                    <p>
+                        집에서만 친다면 소리 크기가 가장 중요합니다. 드럼은 전자드럼,
+                        기타는 헤드폰 단자가 있는 앰프를 먼저 보세요.
+                        합주실에 들어갈 생각이라면 이야기가 달라집니다.
+                    </p>
+                </div>
+                <div class="info-card">
+                    <span class="step-no">STEP 2</span>
+                    <h3>예산은 악기 7 : 주변기기 3</h3>
+                    <p>
+                        기타만 사면 소리가 나지 않습니다. 앰프, 케이블, 튜너, 케이스까지가
+                        한 세트입니다. 악기값을 조금 낮추더라도 주변기기를 갖추는 편이
+                        연습을 오래 가게 합니다.
+                    </p>
+                </div>
+                <div class="info-card">
+                    <span class="step-no">STEP 3</span>
+                    <h3>중급기는 나중에</h3>
+                    <p>
+                        입문기로 반 년만 쳐보면 내가 어떤 소리를 좋아하는지 알게 됩니다.
+                        그때 바꾸는 편이 훨씬 정확합니다. 처음부터 비싼 악기를 살 이유는 없습니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 카테고리별 가이드 -->
+        <section class="page-block">
+            <h2>카테고리별 첫 구매 가이드</h2>
+            <p class="lead">
+                입문자가 가장 흔하게 선택하는 구성과 대략적인 예산입니다.
+                카테고리를 누르면 해당 악기 목록으로 이동합니다.
+            </p>
+
+            <div class="table-wrap">
+                <table class="table guide-table">
+                    <thead>
+                    <tr>
+                        <th>카테고리</th>
+                        <th>이런 분께</th>
+                        <th>함께 필요한 것</th>
+                        <th class="num">첫 예산</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><a th:href="@{/products(category='GUITAR')}">기타</a></td>
+                        <td>밴드의 가장 흔한 출발점. 코드 반주부터 리드까지 폭이 넓습니다.</td>
+                        <td>앰프, 케이블, 튜너, 피크</td>
+                        <td class="num price-hint">80만원~</td>
+                    </tr>
+                    <tr>
+                        <td><a th:href="@{/products(category='BASS')}">베이스</a></td>
+                        <td>합주에서 자리가 잘 나고, 밴드 구인이 가장 빠른 파트입니다.</td>
+                        <td>베이스 앰프, 케이블, 스트랩</td>
+                        <td class="num price-hint">100만원~</td>
+                    </tr>
+                    <tr>
+                        <td><a th:href="@{/products(category='DRUM')}">드럼</a></td>
+                        <td>몸으로 배우는 악기. 집에서 친다면 전자드럼이 현실적입니다.</td>
+                        <td>스틱, 페달, 헤드폰, 방진매트</td>
+                        <td class="num price-hint">70만원~</td>
+                    </tr>
+                    <tr>
+                        <td><a th:href="@{/products(category='KEYBOARD')}">건반</a></td>
+                        <td>피아노 경험이 있다면 가장 빨리 합주에 합류할 수 있습니다.</td>
+                        <td>스탠드, 페달, 헤드폰</td>
+                        <td class="num price-hint">90만원~</td>
+                    </tr>
+                    <tr>
+                        <td><a th:href="@{/products(category='AUDIO')}">음향장비</a></td>
+                        <td>연주를 녹음해 남기고 싶을 때. 홈레코딩의 시작점입니다.</td>
+                        <td>오디오 인터페이스, 마이크, 모니터링 헤드폰</td>
+                        <td class="num price-hint">30만원~</td>
+                    </tr>
+                    <tr>
+                        <td><a th:href="@{/products(category='ACCESSORY')}">액세서리</a></td>
+                        <td>소모품은 미리 넉넉히. 줄과 스틱은 생각보다 빨리 닳습니다.</td>
+                        <td>스트링, 스틱, 케이스</td>
+                        <td class="num price-hint">2만원~</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="page-cta">
+                <a th:href="@{/products}" class="btn btn-primary">전체 악기 보기</a>
+            </div>
+        </section>
+
+        <!-- 이용안내 FAQ -->
+        <section class="page-block">
+            <h2>자주 묻는 질문</h2>
+            <p class="lead">주문·배송·예매에 대해 가장 많이 들어온 질문들입니다.</p>
+
+            <details class="faq-item">
+                <summary>회원가입을 하지 않아도 주문할 수 있나요?</summary>
+                <div class="faq-answer">
+                    가능합니다. 상품 상세 페이지에서 <strong>비회원 구매</strong>를 선택하면
+                    로그인 없이 바로 주문할 수 있습니다. 주문이 끝나면
+                    <strong>MLV-20260723-K7X2QP</strong> 형태의 주문번호가 발급됩니다.
+                    이 번호와 주문 시 입력한 연락처로
+                    <a th:href="@{/orders/guest}">비회원 주문조회</a>에서 배송 상태를 확인할 수 있습니다.
+                    <br><br>
+                    다만 비회원 주문은 장바구니를 쓸 수 없어 한 번에 상품 하나만 주문됩니다.
+                    여러 개를 함께 담으려면 회원가입이 필요합니다.
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>주문번호를 잃어버렸어요.</summary>
+                <div class="faq-answer">
+                    비회원 주문은 주문번호가 유일한 열쇠라서, 번호 없이는 조회가 어렵습니다.
+                    대표번호(2026-9999)로 연락 주시면 주문자명과 연락처로 확인해드립니다.
+                    다음 주문부터는 <a th:href="@{/members/signup}">회원가입</a>을 해두시면
+                    마이페이지에서 모든 주문 내역을 볼 수 있습니다.
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>배송은 얼마나 걸리나요?</summary>
+                <div class="faq-answer">
+                    주문 확인 후 <strong>2~3일 내 출고</strong>됩니다.
+                    드럼 세트나 디지털 피아노처럼 부피가 큰 악기는 배송사 사정에 따라
+                    2~3일이 더 걸릴 수 있습니다. 출고가 시작되면 주문 상태가
+                    <strong>배송중</strong>으로 바뀝니다.
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>주문을 취소하고 싶어요.</summary>
+                <div class="faq-answer">
+                    <strong>주문완료</strong> 또는 <strong>결제완료</strong> 상태까지는
+                    주문 상세 화면에서 직접 취소할 수 있고, 재고도 바로 복구됩니다.
+                    이미 <strong>배송중</strong>으로 넘어갔다면 취소 버튼이 사라지므로
+                    고객센터로 연락 주셔야 합니다.
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>공연 예매도 비회원으로 가능한가요?</summary>
+                <div class="faq-answer">
+                    공연 예매는 <strong>회원만</strong> 가능합니다.
+                    관람일과 매수를 확인해야 하고 취소 규정이 상품 주문과 달라서,
+                    예매 내역을 계정에 묶어두고 있습니다.
+                    <a th:href="@{/members/signup}">회원가입</a> 후
+                    <a th:href="@{/tickets}">Ticket</a> 메뉴에서 예매해주세요.
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>예매한 공연을 취소할 수 있나요?</summary>
+                <div class="faq-answer">
+                    예매 상세 화면에서 직접 취소할 수 있으며, 취소하면 좌석이 다시 열립니다.
+                    <strong>관람완료</strong>로 처리된 뒤에는 취소할 수 없습니다.
+                </div>
+            </details>
+
+            <details class="faq-item">
+                <summary>악기를 직접 쳐보고 살 수 있나요?</summary>
+                <div class="faq-answer">
+                    하남 미사동 매장에 시연용 악기를 두고 있습니다.
+                    영업시간과 위치는 <a th:href="@{/about}">About</a> 페이지에서 확인해주세요.
+                    방문 전 연락 주시면 원하시는 모델을 미리 꺼내두겠습니다.
+                </div>
+            </details>
+
+            <div class="page-cta">
+                <a th:href="@{/orders/guest}" class="btn btn-outline">비회원 주문조회</a>
+                <a th:href="@{/about}" class="btn btn-outline">매장 정보 보기</a>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+</body>
+
+</html>

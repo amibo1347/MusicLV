@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: commonHead(${performance.title}, 'ticket')}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('ticket')}"></header>
+
+<main class="page">
+    <div class="container">
+
+        <div th:replace="~{fragments/layout :: flash}"></div>
+
+        <div class="perf-detail">
+            <div class="perf-detail-poster">
+                <img th:if="${performance.posterUrl}" th:src="${performance.posterUrl}"
+                     th:alt="${performance.title}">
+                <span th:unless="${performance.posterUrl}" class="poster-placeholder">
+                    <span class="poster-cat" th:text="${performance.category.label}">카테고리</span>
+                    <span class="poster-title" th:text="${performance.title}">공연명</span>
+                </span>
+            </div>
+
+            <div>
+                <span class="perf-cat" th:text="${performance.category.label}">카테고리</span>
+                <h1 class="perf-detail-title" th:text="${performance.title}">공연명</h1>
+
+                <dl class="perf-meta">
+                    <div class="perf-meta-row">
+                        <dt>공연장</dt>
+                        <dd th:text="${performance.venue}">-</dd>
+                    </div>
+                    <div class="perf-meta-row" th:if="${performance.cast}">
+                        <dt>출연</dt>
+                        <dd th:text="${performance.cast}">-</dd>
+                    </div>
+                    <div class="perf-meta-row">
+                        <dt>공연기간</dt>
+                        <dd th:text="${#temporals.format(performance.startDate, 'yyyy.MM.dd')} + ' ~ ' + ${#temporals.format(performance.endDate, 'yyyy.MM.dd')}">-</dd>
+                    </div>
+                    <div class="perf-meta-row">
+                        <dt>관람시간</dt>
+                        <dd th:text="${performance.runningTime} + '분'">-</dd>
+                    </div>
+                    <div class="perf-meta-row" th:if="${performance.ageRating}">
+                        <dt>관람등급</dt>
+                        <dd th:text="${performance.ageRating}">-</dd>
+                    </div>
+                    <div class="perf-meta-row">
+                        <dt>잔여좌석</dt>
+                        <dd th:if="${performance.bookable}" th:text="${performance.seats} + '석'">-</dd>
+                        <dd th:if="${performance.closed}" style="color:var(--text-dim)">공연이 종료되었습니다</dd>
+                        <dd th:if="${!performance.closed and performance.soldOut}"
+                            style="color:var(--danger)">매진</dd>
+                    </div>
+                    <div class="perf-meta-row">
+                        <dt>가격</dt>
+                        <dd style="font-size:1.25rem; font-weight:700"
+                            th:text="${#numbers.formatInteger(performance.price, 3, 'COMMA')} + '원'">0원</dd>
+                    </div>
+                </dl>
+
+                <!-- 예매 -->
+                <div class="book-box" th:if="${performance.bookable}">
+                    <h2>예매하기</h2>
+
+                    <!-- 비로그인 -->
+                    <div sec:authorize="!isAuthenticated()">
+                        <p class="form-help" style="margin-bottom:16px">
+                            공연 예매는 로그인 후 이용할 수 있습니다.
+                        </p>
+                        <a th:href="@{/members/login}" class="btn btn-primary btn-block btn-lg">로그인하고 예매하기</a>
+                    </div>
+
+                    <!-- 로그인 -->
+                    <form sec:authorize="isAuthenticated()" method="post"
+                          th:action="@{/tickets/{id}/book(id=${performance.id})}"
+                          th:object="${bookingForm}">
+
+                        <div class="book-row">
+                            <div class="form-group">
+                                <label class="form-label" for="viewDate">관람일 <span class="required">*</span></label>
+                                <input type="date" id="viewDate" class="form-control" th:field="*{viewDate}"
+                                       th:min="${performance.startDate}" th:max="${performance.endDate}" required>
+                                <span class="field-error" th:if="${#fields.hasErrors('viewDate')}"
+                                      th:errors="*{viewDate}"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="quantity">인원 <span class="required">*</span></label>
+                                <input type="number" id="quantity" class="form-control" th:field="*{quantity}"
+                                       min="1" th:max="${performance.seats}" required>
+                                <span class="field-error" th:if="${#fields.hasErrors('quantity')}"
+                                      th:errors="*{quantity}"></span>
+                            </div>
+                        </div>
+
+                        <div class="book-row">
+                            <div class="form-group">
+                                <label class="form-label" for="bookerName">예매자 <span class="required">*</span></label>
+                                <input type="text" id="bookerName" class="form-control" th:field="*{bookerName}"
+                                       placeholder="홍길동" required maxlength="50">
+                                <span class="field-error" th:if="${#fields.hasErrors('bookerName')}"
+                                      th:errors="*{bookerName}"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="bookerPhone">연락처 <span class="required">*</span></label>
+                                <input type="tel" id="bookerPhone" class="form-control" th:field="*{bookerPhone}"
+                                       placeholder="010-1234-5678" required>
+                                <span class="field-error" th:if="${#fields.hasErrors('bookerPhone')}"
+                                      th:errors="*{bookerPhone}"></span>
+                            </div>
+                        </div>
+
+                        <div class="book-total">
+                            <span class="summary-label">1매 가격</span>
+                            <strong th:text="${#numbers.formatInteger(performance.price, 3, 'COMMA')} + '원'">0원</strong>
+                        </div>
+
+                        <div class="form-footer">
+                            <button type="submit" class="btn btn-primary btn-block btn-lg">예매하기</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="book-box" th:unless="${performance.bookable}">
+                    <h2 th:text="${performance.closed} ? '공연이 종료되었습니다' : '매진되었습니다'">예매 불가</h2>
+                    <p class="form-help">다른 공연을 둘러보세요.</p>
+                    <div class="form-footer">
+                        <a th:href="@{/tickets}" class="btn btn-outline btn-block">공연 목록으로</a>
+                    </div>
+                </div>
+
+                <div class="notice-box">
+                    · 예매한 티켓은 공연 3일 전까지 취소할 수 있습니다.<br>
+                    · 공연 당일 신분증을 지참해주세요.<br>
+                    · 관람 등급 미만은 입장이 제한될 수 있습니다.
+                </div>
+            </div>
+        </div>
+
+        <section class="detail-description" th:if="${performance.description}">
+            <h2>공연 소개</h2>
+            <p th:text="${performance.description}">설명</p>
+        </section>
+
+        <div style="margin-top:50px">
+            <a th:href="@{/tickets}" class="btn btn-outline">목록으로</a>
+        </div>
+
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+</body>
+
+</html>

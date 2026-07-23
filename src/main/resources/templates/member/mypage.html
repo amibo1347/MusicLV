@@ -75,6 +75,45 @@
             <p class="empty-title">아직 주문 내역이 없습니다.</p>
             <a th:href="@{/products}" class="btn btn-primary">상품 보러 가기</a>
         </div>
+
+        <!-- 공연 예매 -->
+        <div class="section-head" style="margin-top:50px">
+            <h2 class="page-title" style="font-size:1.4rem">최근 예매</h2>
+            <a th:href="@{/bookings}" class="btn btn-outline btn-sm">전체 예매 내역</a>
+        </div>
+
+        <div class="table-wrap" th:if="${!bookings.isEmpty()}">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>예매번호</th>
+                    <th>공연</th>
+                    <th>관람일</th>
+                    <th class="num">인원</th>
+                    <th class="num">결제금액</th>
+                    <th class="center">상태</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="b : ${bookings}">
+                    <td><a th:href="@{/bookings/{id}(id=${b.id})}" th:text="'#' + ${b.id}">#1</a></td>
+                    <td th:text="${b.performance.title}">공연</td>
+                    <td th:text="${#temporals.format(b.viewDate, 'yyyy-MM-dd')}">-</td>
+                    <td class="num" th:text="${b.quantity} + '매'">0매</td>
+                    <td class="num" th:text="${#numbers.formatInteger(b.totalAmount, 3, 'COMMA')} + '원'">0원</td>
+                    <td class="center">
+                        <span class="status" th:classappend="'status-' + ${b.status}"
+                              th:text="${b.status.label}">-</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="empty" th:if="${bookings.isEmpty()}">
+            <p class="empty-title">아직 예매한 공연이 없습니다.</p>
+            <a th:href="@{/tickets}" class="btn btn-primary">공연 보러 가기</a>
+        </div>
     </div>
 </main>
 

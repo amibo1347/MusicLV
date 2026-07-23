@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('Ticket', 'ticket')}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('ticket')}"></header>
+
+<main class="page">
+    <div class="container">
+
+        <h1 class="page-title" th:if="${keyword == null or keyword.isEmpty()}">Ticket</h1>
+        <h1 class="page-title" th:unless="${keyword == null or keyword.isEmpty()}"
+            th:text="'\'' + ${keyword} + '\' 검색 결과'">검색 결과</h1>
+        <p class="page-desc" th:text="'전체 ' + ${performances.totalElements} + '개의 공연'">0개</p>
+
+        <div th:replace="~{fragments/layout :: flash}"></div>
+
+        <div class="filter-bar">
+            <a class="chip" th:classappend="${selectedCategory == null} ? ' active'"
+               th:href="@{/tickets(keyword=${keyword}, sort=${sort})}">전체</a>
+            <a th:each="cat : ${categories}" class="chip"
+               th:classappend="${selectedCategory != null and selectedCategory.name == cat.name} ? ' active'"
+               th:href="@{/tickets(keyword=${keyword}, category=${cat}, sort=${sort})}"
+               th:text="${cat.label}">카테고리</a>
+
+            <form class="filter-spacer" th:action="@{/tickets}" method="get">
+                <input type="hidden" name="keyword" th:value="${keyword}">
+                <input type="hidden" name="category" th:value="${selectedCategory}">
+                <select name="sort" class="select" onchange="this.form.submit()">
+                    <option value="soon" th:selected="${sort == 'soon'}">공연 임박순</option>
+                    <option value="priceAsc" th:selected="${sort == 'priceAsc'}">낮은 가격순</option>
+                    <option value="priceDesc" th:selected="${sort == 'priceDesc'}">높은 가격순</option>
+                    <option value="title" th:selected="${sort == 'title'}">공연명순</option>
+                </select>
+            </form>
+        </div>
+
+        <div class="perf-grid" th:if="${performances.hasContent()}">
+            <th:block th:each="p : ${performances.content}">
+                <div th:replace="~{fragments/perf :: perfCard(${p})}"></div>
+            </th:block>
+        </div>
+
+        <div class="empty" th:unless="${performances.hasContent()}">
+            <p class="empty-title">조건에 맞는 공연이 없습니다.</p>
+            <a th:href="@{/tickets}" class="btn btn-outline">전체 공연 보기</a>
+        </div>
+
+        <nav class="pagination" th:if="${performances.totalPages > 1}">
+            <a th:if="${!performances.first}"
+               th:href="@{/tickets(keyword=${keyword}, category=${selectedCategory}, sort=${sort}, page=${performances.number - 1})}">이전</a>
+            <span th:unless="${!performances.first}" class="disabled">이전</span>
+
+            <th:block th:each="i : ${#numbers.sequence(0, performances.totalPages - 1)}">
+                <span th:if="${i == performances.number}" class="current" th:text="${i + 1}">1</span>
+                <a th:unless="${i == performances.number}"
+                   th:href="@{/tickets(keyword=${keyword}, category=${selectedCategory}, sort=${sort}, page=${i})}"
+                   th:text="${i + 1}">1</a>
+            </th:block>
+
+            <a th:if="${!performances.last}"
+               th:href="@{/tickets(keyword=${keyword}, category=${selectedCategory}, sort=${sort}, page=${performances.number + 1})}">다음</a>
+            <span th:unless="${!performances.last}" class="disabled">다음</span>
+        </nav>
+
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+</body>
+
+</html>

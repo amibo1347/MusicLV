@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments/layout :: commonHead('주문 관리', 'shop')}"></head>
+<head th:replace="~{fragments/layout :: commonHead('주문 관리', null)}"></head>
 
 <body>
 <header th:replace="~{fragments/layout :: siteHeader('admin')}"></header>
@@ -14,7 +14,11 @@
                 <p class="page-desc" style="margin:0"
                    th:text="'전체 ' + ${orders.totalElements} + '건의 주문'">0건</p>
             </div>
-            <a th:href="@{/admin/products}" class="btn btn-outline">상품 관리</a>
+            <div style="display:flex; gap:10px; flex-wrap:wrap">
+                <a th:href="@{/admin/products}" class="btn btn-outline">상품 관리</a>
+                <a th:href="@{/admin/performances}" class="btn btn-outline">공연 관리</a>
+                <a th:href="@{/admin/bookings}" class="btn btn-outline">예매 관리</a>
+            </div>
         </div>
 
         <div th:replace="~{fragments/layout :: flash}"></div>

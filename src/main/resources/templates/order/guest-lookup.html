@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: commonHead('비회원 주문조회', 'auth')}"></head>
+
+<body>
+<header th:replace="~{fragments/layout :: siteHeader('')}"></header>
+
+<main class="page">
+    <div class="auth-wrap">
+        <div class="auth-head">
+            <h1 class="page-title">비회원 주문조회</h1>
+            <p class="page-desc">주문번호와 주문 시 입력한 연락처를 입력해주세요.</p>
+        </div>
+
+        <div th:replace="~{fragments/layout :: flash}"></div>
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+
+        <div class="form-card">
+            <form th:action="@{/orders/guest}" th:object="${lookupForm}" method="post" novalidate>
+
+                <div class="form-group">
+                    <label class="form-label" for="orderNumber">주문번호 <span class="required">*</span></label>
+                    <input type="text" id="orderNumber" class="form-control" th:field="*{orderNumber}"
+                           th:errorclass="is-invalid" placeholder="MLV-20260723-K7X2QP" required autofocus>
+                    <span class="form-help">주문 완료 화면에서 받은 번호입니다.</span>
+                    <span class="field-error" th:if="${#fields.hasErrors('orderNumber')}"
+                          th:errors="*{orderNumber}"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="phone">연락처 <span class="required">*</span></label>
+                    <input type="tel" id="phone" class="form-control" th:field="*{phone}"
+                           th:errorclass="is-invalid" placeholder="010-1234-5678" required>
+                    <span class="form-help">하이픈(-)은 넣어도 되고 빼도 됩니다.</span>
+                    <span class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
+                </div>
+
+                <div class="form-footer">
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">주문 조회</button>
+                </div>
+            </form>
+
+            <p class="auth-alt">
+                회원이신가요? <a th:href="@{/members/login}">로그인하면 주문 내역을 한눈에 볼 수 있습니다</a>
+            </p>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: siteFooter}"></footer>
+</body>
+
+</html>

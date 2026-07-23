@@ -90,7 +90,7 @@
                 <a th:href="@{/tickets}" class="landing-more-link">전체 공연 →</a>
             </div>
 
-            <div class="perf-grid">
+            <div class="perf-grid perf-grid-landing">
                 <th:block th:each="p : ${upcomingPerformances}">
                     <div th:replace="~{fragments/perf :: perfCard(${p})}"></div>
                 </th:block>

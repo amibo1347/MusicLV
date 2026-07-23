@@ -143,6 +143,32 @@
     color: var(--accent);
 }
 
+/* 랜딩의 공연 영역 — 4개를 한 줄에 모아 보여준다.
+   목록 페이지(auto-fill)와 달리 개수가 4개로 고정이라 빈 칸이 생기지 않게 열 수를 못박는다. */
+.perf-grid-landing {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+}
+
+/* 세로로 길어지지 않도록 포스터 비율을 조금 낮춘다 */
+.perf-grid-landing .perf-poster {
+    aspect-ratio: 4 / 5;
+}
+
+.perf-grid-landing .perf-body {
+    gap: 4px;
+    padding: 13px 14px 16px;
+}
+
+.perf-grid-landing .perf-title {
+    font-size: 0.95rem;
+}
+
+.perf-grid-landing .perf-price {
+    margin-top: 4px;
+    font-size: 1rem;
+}
+
 /* 이용 안내 */
 .benefit-grid {
     display: grid;
@@ -174,6 +200,18 @@
     margin-top: 14px;
     font-size: 0.9rem;
     color: var(--accent);
+}
+
+@media (max-width: 1024px) {
+    .perf-grid-landing {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .perf-grid-landing {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 900px) {
